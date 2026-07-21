@@ -6,7 +6,7 @@
 
 This repository showcases two AI-powered business automation workflows that streamline the sales process from lead generation to proposal creation and contract delivery.
 
-These projects demonstrate practical applications of AI agents, workflow automation, CRM integration, document generation, and API orchestration using modern no-code/low-code tools.
+These projects demonstrate practical applications of AI agents, workflow automation, CRM integration, document generation, and API orchestration using modern tools.
 
 ---
 
