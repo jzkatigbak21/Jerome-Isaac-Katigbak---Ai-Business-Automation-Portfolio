@@ -10,7 +10,8 @@ Instead of relying on a single AI agent to complete every task, the workflow fol
 
 ---
 ## n8n Workflow
-<img width="1081" height="563" alt="workflow-overview png" src="https://github.com/user-attachments/assets/9f3c0fc5-dd07-4c11-813b-34e2b04d7678" />
+<img width="1321" height="580" alt="image" src="https://github.com/user-attachments/assets/f511dfa5-8725-4ad4-bd85-d15269881c82" />
+
 
 
 # System Architecture
