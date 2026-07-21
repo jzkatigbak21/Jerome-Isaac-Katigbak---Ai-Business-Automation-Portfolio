@@ -9,6 +9,8 @@ This repository showcases two AI-powered business automation workflows that stre
 These projects demonstrate practical applications of AI agents, workflow automation, CRM integration, document generation, and API orchestration using modern tools.
 
 ---
+## 🎥 Portfolio Walkthrough
+https://drive.google.com/file/d/1fF5a4NLAII7zrC4AENpJL3Msu7EMgk1A/view?usp=drive_link
 
 # Workflow 1: AI Business Development Manager
 
