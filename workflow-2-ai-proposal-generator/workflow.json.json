@@ -1,0 +1,348 @@
+{
+    "id": 373212602,
+    "title": "Google Slides AI Proposal Generator",
+    "status": "off",
+    "nodes": {
+      "373212602": {
+        "id": 373212602,
+        "account_id": 28123583,
+        "customuser_id": 28278364,
+        "paused": true,
+        "type_of": "read",
+        "params": {
+          "projectId": "cmrss37gf000zkfqzud25qjpr",
+          "pageId": "cmrss38jf004akkqfu8zurps0",
+          "formId": "cmrss52gq000qb345ab0tc1ua"
+        },
+        "meta": {
+          "$editor": {
+            "has_automatic_issues": false
+          },
+          "parammap": {
+            "projectId": "Post Discovery Call Form",
+            "pageId": "Page",
+            "formId": "Project Details"
+          }
+        },
+        "triple_stores": {
+          "copied_from": null,
+          "created_by": null,
+          "polling_interval_override": 0,
+          "block_and_release_limit_override": 0,
+          "spread_tasks": 1
+        },
+        "folders": null,
+        "parent_id": null,
+        "root_id": null,
+        "action": "new_form_submission",
+        "selected_api": "InterfacesCLIAPI@1.9.1",
+        "title": "Google Slides AI Proposal Generator",
+        "authentication_id": null,
+        "created_at": "2026-07-20T05:18:59+00:00",
+        "last_changed": "2026-07-20T11:18:48+00:00"
+      },
+      "373212603": {
+        "id": 373212603,
+        "account_id": 28123583,
+        "customuser_id": 28278364,
+        "paused": true,
+        "type_of": "write",
+        "params": {
+          "model": "gpt-4o",
+          "max_tokens": "2000",
+          "tool_choice": "auto",
+          "parallel_tool_calls": true,
+          "max_tool_calls": "5",
+          "response_format": "json_object",
+          "temperature": "0.7",
+          "top_p": "0.9",
+          "instructions": "You are a helpful, intelligent writing assistant.\r\n\r\nYou write high-quality, customized business proposals for an automation/no-code agency. Always follow the user's instructions exactly and return only the requested JSON.",
+          "user_message": "Your task is to generate a proposal using input data from a form.\r\n\r\nContext:\r\nWe are an automation/no-code agency that develops systems revolving around growth, revenue operations, AI automation, and business systems.\r\n\r\nReturn ONE JSON object with these fields:\r\n\n\r\n{\r\n  \"proposalTitle\":\"\",\r\n  \"descriptionName\":\"\",\r\n  \"oneParagraphProblemSummary\":\"\",\r\n  \"solutionHeadingOne\":\"\",\r\n  \"solutionDescriptionOne\":\"\",\r\n  \"solutionHeadingTwo\":\"\",\r\n  \"solutionDescriptionTwo\":\"\",\r\n  \"solutionHeadingThree\":\"\",\r\n  \"solutionDescriptionThree\":\"\",\r\n  \"shortScopeTitleOne\":\"\",\r\n  \"shortScopeTitleTwo\":\"\",\r\n  \"shortScopeTitleThree\":\"\",\r\n  \"shortScopeDescriptionOne\":\"\",\r\n  \"shortScopeDescriptionTwo\":\"\",\r\n  \"shortScopeDescriptionThree\":\"\",\r\n  \"milestoneOneDay\":\"\",\r\n  \"milestoneTwoDay\":\"\",\r\n  \"milestoneThreeDay\":\"\",\r\n  \"milestoneFourDay\":\"\",\r\n  \"milestoneDescriptionOne\":\"\",\r\n  \"milestoneDescriptionTwo\":\"\",\r\n  \"milestoneDescriptionThree\":\"\",\r\n  \"milestoneDescriptionFour\":\"\"\r\n}\r\n\r\nRules:\r\n\r\n1. Use a spartan, casual tone.\r\n2. Be concise but professional.\r\n3. Fill every field.\r\n4. Description fields should be no longer than 14 words.\r\n5.Return a JSON object.\n\nDo not wrap the JSON in markdown.\n\nDo not use ```json.\n\nDo not use code fences.\n\nYour first character must be {\n\nYour last character must be }\n\nEXAMPLE INPUT\n\n{\r\n  \"companyName\":\"MM Digital\",\r\n  \"problem\":\"they can't generate leads. everything is referral based rn.\",\r\n  \"solution\":\"cold email lead gen system, client reactivation system, and best in class sales training for closing\",\r\n  \"scope\":\"1k/day cold email infra, 30k email leads, 4 weekly zoom sessions for sales training\",\r\n  \"currentDate\":\"Feb 4 2025\",\r\n  \"howSoon\":\"two months\",\r\n  \"depositCost\":\"$1,845\"\r\n}\n\n\nEXAMPLE OUTPUT\n\n{\n  \"proposalTitle\": \"Lead Gen System for MM Digital\n\",\n  \"descriptionName\": \"A simple, scalable lead generation system built to help grow your content efforts & connect you with the right people.\n\",\n  \"oneParagraphProblemSummary\": \"Right now, MM Digital is struggling with an inability to generate qualified leads. The majority of your new clients are referral-based, which, while always nice to have, is not scalable nor is it reliable. Building an alternative strategy—one that allows you to take leads from cold -> close—is vital to the health and longevity of the company, and it’s what we’re going to help you with.\n\",\n  \"solutionHeadingOne\": \"Cold Outbound Lead Gen\",\n  \"solutionDescriptionOne\": \"We’ll put in place a robust cold-email-based system for you using best practices.\",\n  \"solutionHeadingTwo\": \"Client Reactivation System\",\n  \"solutionDescriptionTwo\": \"We’ll build a simple, but high-ROI reactivation system to let you extract value from pre-existing clients.\",\n  \"solutionHeadingThree\": \"Best-In-Class Sales Training\",\n  \"solutionDescriptionThree\": \"We’ll train your team with world-class setting & closing mechanisms.\",\n  \"shortScopeTitleOne\": \"Cold email infrastructure that sends ~1K emails/day\",\n  \"shortScopeTitleTwo\": \"30K high-quality scraped email leads (included)\",\n  \"shortScopeTitleThree\": \"Four weekly one-hour sales training sessions over Zoom\",\n  \"shortScopeDescriptionOne\": \"12 domains, 36 mailboxes, DNS optimization, and warmups included.\",\n  \"shortScopeDescriptionTwo\": \"30,000 leads in your target market, delivered by CSV.\",\n  \"shortScopeDescriptionThree\": \"We’ll take your sales team from 0->1.\",\n  \"milestoneOneDay\": \"February 8th, 2025\",\n  \"milestoneTwoDay\": \"February 28th, 2025\",\n  \"milestoneThreeDay\": \"March 10th, 2025\",\n  \"milestoneFourDay\":\"March 17th-April 1st, 2025\",\n  \"milestoneDescriptionOne\": \"Cold email system done & ready for warmup.\",\n  \"milestoneDescriptionTwo\": \"Cold email system fully warmed up & operational.\",\n  \"milestoneDescriptionThree\": \"10,000 outbound emails sent; analysis & training #1.\",\n  \"milestoneDescriptionFour\":\"One sales training per week alongside iteration & handoff.\"\n}\n\nNOW GENERATE A PROPOSAL FOR THIS CLIENT\n\n{\n  \"companyName\":\" {{=gives[\"373212602\"][\"values\"][\"cmrss4x75001j0cl39toce447\"]}} \",\n  \"problem\": \"{{=gives[\"373212602\"][\"values\"][\"cmrss4x75001m0cl37lzw1kms\"]}}\",\n  \"solution\": \"{{=gives[\"373212602\"][\"values\"][\"cmrss4x75001n0cl33q6fczlh\"]}}\",\n  \"scope\": \"{{=gives[\"373212602\"][\"values\"][\"cmrss4x75001o0cl3b4ysf6f5\"]}}\",\n  \"currentDate\":\"{{=gives[\"373212602\"][\"createdAt\"]}}\",\n  \"howSoon\": \"{{=gives[\"373212602\"][\"values\"][\"cmrss4x75001q0cl34xvj4icp\"]}}\",\n  \"depositCost\": \"{{=gives[\"373212602\"][\"values\"][\"cmrss4x75001p0cl3400uattd\"]}}\"\n}\n\n"
+        },
+        "meta": {
+          "$editor": {
+            "has_automatic_issues": false
+          },
+          "parammap": {
+            "model": "gpt-4o"
+          }
+        },
+        "triple_stores": {
+          "copied_from": null,
+          "created_by": null,
+          "polling_interval_override": 0,
+          "block_and_release_limit_override": 0,
+          "spread_tasks": 1
+        },
+        "folders": null,
+        "parent_id": 373212602,
+        "root_id": 373212602,
+        "action": "conversation_responses_api",
+        "selected_api": "ChatGPTCLIAPI@2.56.10",
+        "title": null,
+        "authentication_id": 65178565,
+        "created_at": "2026-07-20T05:18:59+00:00",
+        "last_changed": "2026-07-20T11:18:48+00:00"
+      },
+      "373219075": {
+        "id": 373219075,
+        "account_id": 28123583,
+        "customuser_id": 28278364,
+        "paused": true,
+        "type_of": "write",
+        "params": {
+          "title": "{{=gives[\"373212603\"][\"output_json\"][\"proposalTitle\"]}}",
+          "presentation_id": "18lfpta3RzgJMgU-nA2lHXDhaUgl8_oXteFbYK7uHokg",
+          "template_fields__proposalTitle\",\n          \"style\": {\n           \"foregroundColor\": {\n            \"opaqueColor\": {\n             \"themeColor\": \"DARK1\"\n            }\n           },\n           \"fontSize\": {\n            \"magnitude\": 36,\n            \"unit\": \"PT\"\n           }\n          }\n         }\n        },\n        {\n         \"startIndex\": 15,\n         \"endIndex\": 17,\n         \"textRun\": {\n          \"content\": \"": "test",
+          "template_fields__descriptionName": "{{=gives[\"373212603\"][\"output_json\"][\"descriptionName\"]}}",
+          "template_fields__proposalTitle": "{{=gives[\"373212603\"][\"output_json\"][\"proposalTitle\"]}}",
+          "template_fields__oneParagraphProblemSummary": "{{=gives[\"373212603\"][\"output_json\"][\"oneParagraphProblemSummary\"]}}",
+          "template_fields__solutionHeadingOne": "{{=gives[\"373212603\"][\"output_json\"][\"solutionHeadingOne\"]}}",
+          "template_fields__solutionDescriptionOne": "{{=gives[\"373212603\"][\"output_json\"][\"solutionDescriptionOne\"]}}",
+          "template_fields__solutionHeadingTwo": "{{=gives[\"373212603\"][\"output_json\"][\"solutionHeadingTwo\"]}}",
+          "template_fields__solutionDescriptionTwo": "{{=gives[\"373212603\"][\"output_json\"][\"solutionDescriptionTwo\"]}}",
+          "template_fields__solutionHeadingThree": "{{=gives[\"373212603\"][\"output_json\"][\"solutionHeadingThree\"]}}",
+          "template_fields__solutionDescriptionThree": "{{=gives[\"373212603\"][\"output_json\"][\"solutionDescriptionThree\"]}}",
+          "template_fields__shortScopeTitleOne": "{{=gives[\"373212603\"][\"output_json\"][\"shortScopeTitleOne\"]}}",
+          "template_fields__shortScopeDescriptionOne": "{{=gives[\"373212603\"][\"output_json\"][\"shortScopeDescriptionOne\"]}}",
+          "template_fields__shortScopeTitleTwo": "{{=gives[\"373212603\"][\"output_json\"][\"shortScopeTitleTwo\"]}}",
+          "template_fields__shortScopeDescriptionTwo": "{{=gives[\"373212603\"][\"output_json\"][\"shortScopeDescriptionTwo\"]}}",
+          "template_fields__shortScopeTitleThree": "{{=gives[\"373212603\"][\"output_json\"][\"shortScopeTitleThree\"]}}",
+          "template_fields__shortScopeDescriptionThree": "{{=gives[\"373212603\"][\"output_json\"][\"shortScopeDescriptionThree\"]}}",
+          "template_fields__milestoneOneDay": "{{=gives[\"373212603\"][\"output_json\"][\"milestoneOneDay\"]}}",
+          "template_fields__milestoneDescriptionOne": "{{=gives[\"373212603\"][\"output_json\"][\"milestoneDescriptionOne\"]}}",
+          "template_fields__milestoneTwoDay": "{{=gives[\"373212603\"][\"output_json\"][\"milestoneTwoDay\"]}}",
+          "template_fields__milestoneDescriptionTwo": "{{=gives[\"373212603\"][\"output_json\"][\"milestoneDescriptionTwo\"]}}",
+          "template_fields__milestoneThreeDay": "{{=gives[\"373212603\"][\"output_json\"][\"milestoneThreeDay\"]}}",
+          "template_fields__milestoneDescriptionThree": "{{=gives[\"373212603\"][\"output_json\"][\"milestoneDescriptionThree\"]}}",
+          "template_fields__milestoneFourDay": "{{=gives[\"373212603\"][\"output_json\"][\"milestoneFourDay\"]}}",
+          "template_fields__milestoneDescriptionFour": "{{=gives[\"373212603\"][\"output_json\"][\"milestoneDescriptionFour\"]}}"
+        },
+        "meta": {
+          "$editor": {
+            "has_automatic_issues": false
+          },
+          "parammap": {
+            "presentation_id": "Proposal Slides"
+          }
+        },
+        "triple_stores": {
+          "copied_from": null,
+          "created_by": null,
+          "polling_interval_override": 0,
+          "block_and_release_limit_override": 0,
+          "spread_tasks": 1
+        },
+        "folders": null,
+        "parent_id": 373212603,
+        "root_id": 373212602,
+        "action": "create_presentation_from_template",
+        "selected_api": "GoogleSlidesCLIAPI@1.1.0",
+        "title": null,
+        "authentication_id": 65178933,
+        "created_at": "2026-07-20T07:16:51+00:00",
+        "last_changed": "2026-07-20T11:18:48+00:00"
+      },
+      "373219809": {
+        "id": 373219809,
+        "account_id": 28123583,
+        "customuser_id": 28278364,
+        "paused": true,
+        "type_of": "write",
+        "params": {
+          "body_type": "plain",
+          "render_signature_in_html": false,
+          "signature_delimiter": true,
+          "send_to_groups": false,
+          "to": [
+            "{{=gives[\"373212602\"][\"values\"][\"cmrss4x75001k0cl3gr1sdiof\"]}}"
+          ],
+          "from": "jerome.katigbak@gmail.com",
+          "subject": "Proposal for {{=gives[\"373212602\"][\"values\"][\"cmrss4x75001j0cl39toce447\"]}}",
+          "body": "Hey {{=gives[\"373212602\"][\"values\"][\"cmrss4x75001h0cl3c8dp7v8s\"]}},\n\nThanks for the great call earlier. I had a moment after our chat to put together a detailed proposal for you—please take a look at your earliest convenience and let me know your thoughts.\n\nYou'll find it here: https://docs.google.com/presentation/d/{{=gives['373219075'][\"presentationId\"]}}/edit\n\nIf you have any questions, just shout. I've also sent over an invoice for the project (just to keep things convenient) and can get started anytime that's sorted.\n\nThanks,\nMatt"
+        },
+        "meta": {
+          "$editor": {
+            "has_automatic_issues": false
+          },
+          "parammap": {
+            "from": "jerome.katigbak@gmail.com"
+          }
+        },
+        "triple_stores": {
+          "copied_from": null,
+          "created_by": null,
+          "polling_interval_override": 0,
+          "block_and_release_limit_override": 0,
+          "spread_tasks": 1
+        },
+        "folders": null,
+        "parent_id": 373219075,
+        "root_id": 373212602,
+        "action": "message",
+        "selected_api": "GoogleMailV2CLIAPI@2.14.0",
+        "title": null,
+        "authentication_id": 65179577,
+        "created_at": "2026-07-20T07:28:16+00:00",
+        "last_changed": "2026-07-20T11:18:48+00:00"
+      },
+      "373220436": {
+        "id": 373220436,
+        "account_id": 28123583,
+        "customuser_id": 28278364,
+        "paused": true,
+        "type_of": "write",
+        "params": {
+          "unflatten": true,
+          "return_raw_response": false,
+          "method": "POST",
+          "url": "https://api.pandadoc.com/public/v1/documents",
+          "pass_through": false,
+          "data": "{\r\n  \"name\": \"Proposal for {{=gives[\"373212602\"][\"values\"][\"cmrss4x75001j0cl39toce447\"]}}\",\r\n  \"template_uuid\": \"K6NgUjUHPCwMr4gpWFFKS3\",\r\n  \"recipients\": [\r\n    {\r\n      \"email\": \"{{=gives[\"373212602\"][\"values\"][\"cmrss4x75001k0cl3gr1sdiof\"]}}\",\r\n      \"first_name\": \"{{=gives[\"373212602\"][\"values\"][\"cmrss4x75001h0cl3c8dp7v8s\"]}}\",\r\n      \"last_name\": \"{{=gives[\"373212602\"][\"values\"][\"cmrss4x75001i0cl3doil8qoh\"]}}\",\r\n      \"role\": \"Client\"\r\n    }\r\n  ],\r\n  \"tokens\": [\r\n    {\r\n      \"name\": \"ClientName\",\r\n      \"value\": \"{{=gives[\"373212602\"][\"values\"][\"cmrss4x75001j0cl39toce447\"]}}\"\r\n    },\r\n    {\r\n      \"name\": \"ClientEmail\",\r\n      \"value\": \"{{=gives[\"373212602\"][\"values\"][\"cmrss4x75001k0cl3gr1sdiof\"]}}\"\r\n    },\r\n    {\r\n      \"name\": \"Service\",\r\n      \"value\": \"{{=gives[\"373212602\"][\"values\"][\"cmrss4x75001n0cl33q6fczlh\"]}}\"\r\n    },\r\n    {\r\n      \"name\": \"Cost\",\r\n      \"value\": \" ${{=gives[\"373212602\"][\"values\"][\"cmrss4x75001p0cl3400uattd\"]}}\"\r\n    },\r\n    {\r\n      \"name\": \"Scope\",\r\n      \"value\": \"{{=gives[\"373212602\"][\"values\"][\"cmrss4x75001o0cl3b4ysf6f5\"]}}\"\r\n    }\r\n  ]\r\n}",
+          "headers": {
+            "Authorization": "API-Key 64996677fef7767c1276c9a473f405c8d03ee353",
+            "Content-Type": "application/json"
+          }
+        },
+        "meta": {
+          "$editor": {
+            "has_automatic_issues": false
+          },
+          "parammap": {},
+          "stepTitle": "PandaDoc Create Draft"
+        },
+        "triple_stores": {
+          "copied_from": null,
+          "created_by": null,
+          "polling_interval_override": 0,
+          "block_and_release_limit_override": 0,
+          "spread_tasks": 1
+        },
+        "folders": null,
+        "parent_id": 373219809,
+        "root_id": 373212602,
+        "action": "custom",
+        "selected_api": "WebHookCLIAPI@1.1.1",
+        "title": null,
+        "authentication_id": null,
+        "created_at": "2026-07-20T07:37:14+00:00",
+        "last_changed": "2026-07-20T11:18:48+00:00"
+      },
+      "373240466": {
+        "id": 373240466,
+        "account_id": 28123583,
+        "customuser_id": 28278364,
+        "paused": true,
+        "type_of": "write",
+        "params": {
+          "delay_for_unit": "minutes",
+          "delay_for_value": "0.17"
+        },
+        "meta": {
+          "$editor": {
+            "has_automatic_issues": false
+          },
+          "parammap": {},
+          "stepTitle": "Delay For 10s"
+        },
+        "triple_stores": {
+          "copied_from": null,
+          "created_by": null,
+          "polling_interval_override": 0,
+          "block_and_release_limit_override": 0,
+          "spread_tasks": 1
+        },
+        "folders": null,
+        "parent_id": 373220436,
+        "root_id": 373212602,
+        "action": "delay_for",
+        "selected_api": "DelayCLIAPI@1.1.2",
+        "title": null,
+        "authentication_id": null,
+        "created_at": "2026-07-20T10:54:58+00:00",
+        "last_changed": "2026-07-20T11:18:48+00:00"
+      },
+      "373240637": {
+        "id": 373240637,
+        "account_id": 28123583,
+        "customuser_id": 28278364,
+        "paused": true,
+        "type_of": "write",
+        "params": {
+          "unflatten": true,
+          "return_raw_response": false,
+          "method": "GET",
+          "url": "https://api.pandadoc.com/public/v1/documents/{{=gives['373220436'][\"id\"]}}",
+          "headers": {
+            "Authorization": "API-Key 64996677fef7767c1276c9a473f405c8d03ee353"
+          },
+          "pass_through": false
+        },
+        "meta": {
+          "$editor": {
+            "has_automatic_issues": false
+          },
+          "parammap": {},
+          "stepTitle": "Get Document Status"
+        },
+        "triple_stores": {
+          "copied_from": null,
+          "created_by": null,
+          "polling_interval_override": 0,
+          "block_and_release_limit_override": 0,
+          "spread_tasks": 1
+        },
+        "folders": null,
+        "parent_id": 373240466,
+        "root_id": 373212602,
+        "action": "custom",
+        "selected_api": "WebHookCLIAPI@1.1.1",
+        "title": null,
+        "authentication_id": null,
+        "created_at": "2026-07-20T10:57:15+00:00",
+        "last_changed": "2026-07-20T11:18:48+00:00"
+      },
+      "373240880": {
+        "id": 373240880,
+        "account_id": 28123583,
+        "customuser_id": 28278364,
+        "paused": true,
+        "type_of": "write",
+        "params": {
+          "unflatten": true,
+          "return_raw_response": false,
+          "method": "POST",
+          "url": "https://api.pandadoc.com/public/v1/documents/{{=gives['373220436'][\"id\"]}}/send",
+          "pass_through": false,
+          "data": "{\r\n  \"message\": \"Hi {{=gives[\"373212602\"][\"values\"][\"cmrss4x75001h0cl3c8dp7v8s\"]}},\\n\\nThank you for your interest. Please review and sign your service agreement.\\n\\nIf you have any questions, simply reply to this email.\\n\\nThank you!\"\r\n}",
+          "headers": {
+            "Authorization": "API-Key 64996677fef7767c1276c9a473f405c8d03ee353",
+            "Content-Type": "application/json"
+          }
+        },
+        "meta": {
+          "$editor": {
+            "has_automatic_issues": false
+          },
+          "parammap": {},
+          "stepTitle": "Send Contract"
+        },
+        "triple_stores": {
+          "copied_from": null,
+          "created_by": null,
+          "polling_interval_override": 0,
+          "block_and_release_limit_override": 0,
+          "spread_tasks": 1
+        },
+        "folders": null,
+        "parent_id": 373240637,
+        "root_id": 373212602,
+        "action": "custom",
+        "selected_api": "WebHookCLIAPI@1.1.1",
+        "title": null,
+        "authentication_id": null,
+        "created_at": "2026-07-20T11:00:11+00:00",
+        "last_changed": "2026-07-20T11:18:48+00:00"
+      }
+    }
+  }
