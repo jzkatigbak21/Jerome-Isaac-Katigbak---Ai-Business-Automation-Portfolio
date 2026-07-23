@@ -1,0 +1,1261 @@
+{
+  "name": "01 - Lead Intake",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        208,
+        -48
+      ],
+      "id": "b31bf19c-52a0-4aee-81e6-c4925574e48e",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appfoyCGaJYo2NOV9",
+          "mode": "list",
+          "cachedResultName": "AI Lead Generation CRM",
+          "cachedResultUrl": "https://airtable.com/appfoyCGaJYo2NOV9"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblmkGrS1UtzbECD1",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://airtable.com/appfoyCGaJYo2NOV9/tblmkGrS1UtzbECD1"
+        },
+        "filterByFormula": "{Automation Status} = \"New\" ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        432,
+        -48
+      ],
+      "id": "b1ca8480-529e-4a0f-b48f-aefba96dce0d",
+      "name": "Search records",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "RgxqpBmzglSIHG8E",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "eaaa2158-3377-42ca-9512-19d1e8c6912c",
+              "leftValue": "={{ $json.fields[\"Company Name\"] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "2947426f-5b77-4fd8-8221-7cd823f4c3b4",
+              "leftValue": "={{ $json.fields[\"Company Website\"] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        656,
+        -48
+      ],
+      "id": "7a14bf5c-d0cc-498f-8846-c8a827b1fe55",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "EvMkIMGTHDTUUJpU",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/EvMkIMGTHDTUUJpU",
+          "cachedResultName": "02 - Company Research"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        1328,
+        -48
+      ],
+      "id": "9ebe46bc-1278-427d-afd2-1af09ab9131e",
+      "name": "Call 'Company Research'"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appfoyCGaJYo2NOV9",
+          "mode": "list",
+          "cachedResultName": "AI Lead Generation CRM",
+          "cachedResultUrl": "https://airtable.com/appfoyCGaJYo2NOV9"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblyEVCkcgJjU2sFP",
+          "mode": "list",
+          "cachedResultName": "Automation Logs",
+          "cachedResultUrl": "https://airtable.com/appfoyCGaJYo2NOV9/tblyEVCkcgJjU2sFP"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Message": "Lead received and validated.",
+            "Status": "Success ",
+            "Workflow": "Lead Intake",
+            "Relate Lead": "={{ [$json.id] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Message",
+              "displayName": "Message",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Workflow",
+              "displayName": "Workflow",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Lead Intake",
+                  "value": "Lead Intake"
+                },
+                {
+                  "name": "Company Research ",
+                  "value": "Company Research "
+                },
+                {
+                  "name": "Outreach Generation ",
+                  "value": "Outreach Generation "
+                },
+                {
+                  "name": "Human Approval ",
+                  "value": "Human Approval "
+                },
+                {
+                  "name": "Email Sender ",
+                  "value": "Email Sender "
+                },
+                {
+                  "name": "Follow-up Scheduler ",
+                  "value": "Follow-up Scheduler "
+                },
+                {
+                  "name": "Dashboard Update",
+                  "value": "Dashboard Update"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Started ",
+                  "value": "Started "
+                },
+                {
+                  "name": "Success ",
+                  "value": "Success "
+                },
+                {
+                  "name": "Warning ",
+                  "value": "Warning "
+                },
+                {
+                  "name": "Failed ",
+                  "value": "Failed "
+                },
+                {
+                  "name": "Skipped",
+                  "value": "Skipped"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Relate Lead",
+              "displayName": "Relate Lead",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1104,
+        -240
+      ],
+      "id": "bb15d57d-b22d-4ea9-b585-b8b4fbdede88",
+      "name": "Create Automation Log",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "RgxqpBmzglSIHG8E",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appfoyCGaJYo2NOV9",
+          "mode": "list",
+          "cachedResultName": "AI Lead Generation CRM",
+          "cachedResultUrl": "https://airtable.com/appfoyCGaJYo2NOV9"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblmkGrS1UtzbECD1",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://airtable.com/appfoyCGaJYo2NOV9/tblmkGrS1UtzbECD1"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "LeadID": "={{ $json.fields.LeadID }}",
+            "Automation Status": "Processing"
+          },
+          "matchingColumns": [
+            "LeadID"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true
+            },
+            {
+              "id": "LeadID",
+              "displayName": "LeadID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Company Website",
+              "displayName": "Company Website",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Contact First Name",
+              "displayName": "Contact First Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Contact Last Name",
+              "displayName": "Contact Last Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Job Title",
+              "displayName": "Job Title",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email Address",
+              "displayName": "Email Address",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "LinkedIn URL",
+              "displayName": "LinkedIn URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Industry",
+              "displayName": "Industry",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "SaaS",
+                  "value": "SaaS"
+                },
+                {
+                  "name": "Healthcare",
+                  "value": "Healthcare"
+                },
+                {
+                  "name": "Ecommerce",
+                  "value": "Ecommerce"
+                },
+                {
+                  "name": "Manufacturing",
+                  "value": "Manufacturing"
+                },
+                {
+                  "name": "Finance",
+                  "value": "Finance"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Company Location",
+              "displayName": "Company Location",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Submitted By",
+              "displayName": "Submitted By",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Submission Date",
+              "displayName": "Submission Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Automation Status",
+              "displayName": "Automation Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "New",
+                  "value": "New"
+                },
+                {
+                  "name": "Processing",
+                  "value": "Processing"
+                },
+                {
+                  "name": "Researching",
+                  "value": "Researching"
+                },
+                {
+                  "name": "Drafting",
+                  "value": "Drafting"
+                },
+                {
+                  "name": "Awaiting Review",
+                  "value": "Awaiting Review"
+                },
+                {
+                  "name": "Approved",
+                  "value": "Approved"
+                },
+                {
+                  "name": "Sending",
+                  "value": "Sending"
+                },
+                {
+                  "name": "Completed",
+                  "value": "Completed"
+                },
+                {
+                  "name": "Failed",
+                  "value": "Failed"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Research Summary",
+              "displayName": "Research Summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Pain Points",
+              "displayName": "Pain Points",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Personalization Angle",
+              "displayName": "Personalization Angle",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email Subject",
+              "displayName": "Email Subject",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email Draft",
+              "displayName": "Email Draft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Approval Status",
+              "displayName": "Approval Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Pending Review",
+                  "value": "Pending Review"
+                },
+                {
+                  "name": "Needs Revision",
+                  "value": "Needs Revision"
+                },
+                {
+                  "name": "Approved",
+                  "value": "Approved"
+                },
+                {
+                  "name": "Rejected",
+                  "value": "Rejected"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Sent Status",
+              "displayName": "Sent Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Not Sent",
+                  "value": "Not Sent"
+                },
+                {
+                  "name": "Scheduled",
+                  "value": "Scheduled"
+                },
+                {
+                  "name": "Sent",
+                  "value": "Sent"
+                },
+                {
+                  "name": "Replied",
+                  "value": "Replied"
+                },
+                {
+                  "name": "Bounced",
+                  "value": "Bounced"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Sent Date",
+              "displayName": "Sent Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Next Follow-Up",
+              "displayName": "Next Follow-Up",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Error Message",
+              "displayName": "Error Message",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        880,
+        -144
+      ],
+      "id": "1b1eb86a-4cf8-4e7f-a633-b688b3774685",
+      "name": "Update record Processing",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "RgxqpBmzglSIHG8E",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7bd1c889-6b43-40a7-901d-f887e4c19608",
+              "name": "airtable_record_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1104,
+        -48
+      ],
+      "id": "6baef6e3-2e75-4374-bd45-61c07172a664",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appfoyCGaJYo2NOV9",
+          "mode": "list",
+          "cachedResultName": "AI Lead Generation CRM",
+          "cachedResultUrl": "https://airtable.com/appfoyCGaJYo2NOV9"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblmkGrS1UtzbECD1",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://airtable.com/appfoyCGaJYo2NOV9/tblmkGrS1UtzbECD1"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        400,
+        144
+      ],
+      "id": "0da0e79b-0ed8-4fae-8cad-09c57181ef19",
+      "name": "Search records1",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "RgxqpBmzglSIHG8E",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appfoyCGaJYo2NOV9",
+          "mode": "list",
+          "cachedResultName": "AI Lead Generation CRM",
+          "cachedResultUrl": "https://airtable.com/appfoyCGaJYo2NOV9"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblmkGrS1UtzbECD1",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://airtable.com/appfoyCGaJYo2NOV9/tblmkGrS1UtzbECD1"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "LeadID": "={{ $json.fields.LeadID }}",
+            "Automation Status": "Failed",
+            "Error Message": "Missing required fields."
+          },
+          "matchingColumns": [
+            "LeadID"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "LeadID",
+              "displayName": "LeadID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Company Website",
+              "displayName": "Company Website",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Contact First Name",
+              "displayName": "Contact First Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Contact Last Name",
+              "displayName": "Contact Last Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Job Title",
+              "displayName": "Job Title",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email Address",
+              "displayName": "Email Address",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "LinkedIn URL",
+              "displayName": "LinkedIn URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Industry",
+              "displayName": "Industry",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "SaaS",
+                  "value": "SaaS"
+                },
+                {
+                  "name": "Healthcare",
+                  "value": "Healthcare"
+                },
+                {
+                  "name": "Ecommerce",
+                  "value": "Ecommerce"
+                },
+                {
+                  "name": "Manufacturing",
+                  "value": "Manufacturing"
+                },
+                {
+                  "name": "Finance",
+                  "value": "Finance"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Company Location",
+              "displayName": "Company Location",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Submitted By",
+              "displayName": "Submitted By",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Submission Date",
+              "displayName": "Submission Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Automation Status",
+              "displayName": "Automation Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "New",
+                  "value": "New"
+                },
+                {
+                  "name": "Processing",
+                  "value": "Processing"
+                },
+                {
+                  "name": "Researching",
+                  "value": "Researching"
+                },
+                {
+                  "name": "Drafting",
+                  "value": "Drafting"
+                },
+                {
+                  "name": "Awaiting Review",
+                  "value": "Awaiting Review"
+                },
+                {
+                  "name": "Approved",
+                  "value": "Approved"
+                },
+                {
+                  "name": "Sending",
+                  "value": "Sending"
+                },
+                {
+                  "name": "Completed",
+                  "value": "Completed"
+                },
+                {
+                  "name": "Failed",
+                  "value": "Failed"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Research Summary",
+              "displayName": "Research Summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Pain Points",
+              "displayName": "Pain Points",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Personalization Angle",
+              "displayName": "Personalization Angle",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email Subject",
+              "displayName": "Email Subject",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email Draft",
+              "displayName": "Email Draft",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Approval Status",
+              "displayName": "Approval Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Pending Review",
+                  "value": "Pending Review"
+                },
+                {
+                  "name": "Needs Revision",
+                  "value": "Needs Revision"
+                },
+                {
+                  "name": "Approved",
+                  "value": "Approved"
+                },
+                {
+                  "name": "Rejected",
+                  "value": "Rejected"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Sent Status",
+              "displayName": "Sent Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Not Sent",
+                  "value": "Not Sent"
+                },
+                {
+                  "name": "Scheduled",
+                  "value": "Scheduled"
+                },
+                {
+                  "name": "Sent",
+                  "value": "Sent"
+                },
+                {
+                  "name": "Replied",
+                  "value": "Replied"
+                },
+                {
+                  "name": "Bounced",
+                  "value": "Bounced"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Sent Date",
+              "displayName": "Sent Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Next Follow-Up",
+              "displayName": "Next Follow-Up",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Error Message",
+              "displayName": "Error Message",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        880,
+        48
+      ],
+      "id": "0405b342-f4cf-4d82-b3aa-9bf17673d4a9",
+      "name": "Update Failed record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "RgxqpBmzglSIHG8E",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Search records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search records": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Update record Processing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update Failed record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Automation Log": {
+      "main": [
+        []
+      ]
+    },
+    "Update record Processing": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create Automation Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Call 'Company Research'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'Company Research'": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "8b61f0a7-d510-4a53-a49c-fa56738b871a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9d5cf8ae5e02a6ff133e92519109182525ea074c246b0a0b89929a71cb570126"
+  },
+  "nodeGroups": [],
+  "id": "XaiQ1WSSJ8g1yPLp",
+  "tags": []
+}

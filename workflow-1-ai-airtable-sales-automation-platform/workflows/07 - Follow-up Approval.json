@@ -1,0 +1,291 @@
+{
+  "name": "07 - Follow-up Approval",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -272,
+        32
+      ],
+      "id": "d0f36abc-ff4c-4e91-bdb1-ff782fb2e6dc",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appfoyCGaJYo2NOV9",
+          "mode": "list",
+          "cachedResultName": "AI Lead Generation CRM",
+          "cachedResultUrl": "https://airtable.com/appfoyCGaJYo2NOV9"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblASWazffkmjQdKO",
+          "mode": "list",
+          "cachedResultName": "Follow-ups",
+          "cachedResultUrl": "https://airtable.com/appfoyCGaJYo2NOV9/tblASWazffkmjQdKO"
+        },
+        "filterByFormula": "{Status} = \"Approved\"",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        -64,
+        32
+      ],
+      "id": "8a52e96b-efa9-4e2d-b0b7-cfc725b5caf2",
+      "name": "Search records",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "RgxqpBmzglSIHG8E",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appfoyCGaJYo2NOV9",
+          "mode": "list",
+          "cachedResultName": "AI Lead Generation CRM",
+          "cachedResultUrl": "https://airtable.com/appfoyCGaJYo2NOV9"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblyEVCkcgJjU2sFP",
+          "mode": "list",
+          "cachedResultName": "Automation Logs",
+          "cachedResultUrl": "https://airtable.com/appfoyCGaJYo2NOV9/tblyEVCkcgJjU2sFP"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Workflow": "Human Approval ",
+            "Status": "Success ",
+            "Relate Lead": "={{[ $json.fields[\"Related Lead\"][0]] }}",
+            "Message": "Follow-up approved for email delivery."
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Message",
+              "displayName": "Message",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Workflow",
+              "displayName": "Workflow",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Lead Intake",
+                  "value": "Lead Intake"
+                },
+                {
+                  "name": "Company Research ",
+                  "value": "Company Research "
+                },
+                {
+                  "name": "Outreach Generation ",
+                  "value": "Outreach Generation "
+                },
+                {
+                  "name": "Human Approval ",
+                  "value": "Human Approval "
+                },
+                {
+                  "name": "Email Sender ",
+                  "value": "Email Sender "
+                },
+                {
+                  "name": "Follow-up Scheduler ",
+                  "value": "Follow-up Scheduler "
+                },
+                {
+                  "name": "Dashboard Update",
+                  "value": "Dashboard Update"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Started ",
+                  "value": "Started "
+                },
+                {
+                  "name": "Success ",
+                  "value": "Success "
+                },
+                {
+                  "name": "Warning ",
+                  "value": "Warning "
+                },
+                {
+                  "name": "Failed ",
+                  "value": "Failed "
+                },
+                {
+                  "name": "Skipped",
+                  "value": "Skipped"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Relate Lead",
+              "displayName": "Relate Lead",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        128,
+        -112
+      ],
+      "id": "8d86d841-c5ed-49bd-bab1-7a1af882d55f",
+      "name": "Create a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "RgxqpBmzglSIHG8E",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "p6y00mL2OAyEatAH",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/p6y00mL2OAyEatAH",
+          "cachedResultName": "08 - Send Follow-up"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        368,
+        32
+      ],
+      "id": "5d24c2fb-7684-4c74-a3f0-20df13f1c2d2",
+      "name": "Call '08 - Send Follow-up'"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Search records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search records": {
+      "main": [
+        [
+          {
+            "node": "Create a record",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Call '08 - Send Follow-up'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a record": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "8045ac5f-b8da-434e-a844-a7da8dde4e06",
+  "meta": {
+    "instanceId": "9d5cf8ae5e02a6ff133e92519109182525ea074c246b0a0b89929a71cb570126"
+  },
+  "nodeGroups": [],
+  "id": "E2LqWJFjAMAhAr2x",
+  "tags": []
+}
