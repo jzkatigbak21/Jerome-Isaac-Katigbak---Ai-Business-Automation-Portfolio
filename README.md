@@ -4,19 +4,89 @@
 
 ## Overview
 
-This repository showcases two AI-powered business automation workflows that streamline the sales process from lead generation to proposal creation and contract delivery.
+This repository showcases three production-style AI automation projects built to streamline business development, outbound sales, and proposal generation. Each project demonstrates how AI, workflow automation, APIs, and business applications can be combined to solve real operational problems.
 
-These projects demonstrate practical applications of AI agents, workflow automation, CRM integration, document generation, and API orchestration using modern tools.
+The portfolio focuses on practical implementations using **n8n**, **Airtable**, **OpenAI**, **Zapier**, and modern APIs with an emphasis on modular workflow design and human-in-the-loop automation.
 
 ---
-## 🎥 Portfolio Walkthrough
-https://drive.google.com/file/d/1fF5a4NLAII7zrC4AENpJL3Msu7EMgk1A/view?usp=drive_link
 
-# Workflow 1: AI Business Development Manager
+## 🎥 Portfolio Walkthrough
+
+https://drive.google.com/file/d/1fF5a4NLAII7zrC4AENpJL3Msu7EMgk1A/view?usp=drive_link
+---
+
+# Workflow 1: AI Airtable Sales Automation Platform
 
 ## Objective
 
-Automatically identify qualified prospects from an Ideal Customer Profile (ICP), store them in a CRM, generate personalized outreach emails, and create Gmail drafts for review before sending.
+Automate the outbound sales process from lead intake through AI-powered company research, personalized outreach generation, human approval, email delivery, follow-up generation, and outreach tracking.
+
+## Workflow
+
+```text
+Airtable Form
+(Lead Submission)
+        ↓
+Lead Intake
+(Validate Lead & Queue Processing)
+        ↓
+Company Research
+(Website Research & AI Analysis)
+        ↓
+AI Outreach Generation
+(Create Personalized Email)
+        ↓
+Human Approval
+(Review & Approve Draft)
+        ↓
+Email Sender
+(Send Gmail Outreach)
+        ↓
+Follow-up Generator
+(Create AI Follow-up Draft)
+        ↓
+Follow-up Approval
+(Review & Approve Follow-up)
+        ↓
+Send Follow-up
+(Deliver Follow-up Email)
+```
+
+## Features
+
+- AI company research
+- Personalized outreach generation
+- Human approval workflow
+- Gmail automation
+- AI-generated follow-ups
+- Airtable CRM
+- Airtable Interface dashboards
+- Automation logging
+- Modular 8-workflow architecture
+
+## Business Impact
+
+- Reduces manual prospect research
+- Standardizes outreach
+- Maintains human review
+- Automates follow-up management
+- Improves sales visibility
+
+## Key Skills Demonstrated
+
+- n8n
+- Airtable
+- OpenAI
+- Human-in-the-Loop Systems
+- Workflow Orchestration
+
+---
+
+# Workflow 2: AI Business Development
+
+## Objective
+
+Identify qualified prospects from an ICP, enrich business information, store contacts in Pipedrive, and generate personalized Gmail drafts.
 
 ## Workflow
 
@@ -45,65 +115,36 @@ Gmail
 Notification
 ```
 
+
 ## Features
 
-- Reads an Ideal Customer Profile (ICP) from Google Docs
-- Uses a multi-agent architecture
-- Searches online for qualified prospects
-- Finds business contact information
-- Stores prospects in Pipedrive CRM
-- Generates personalized outbound HTML email drafts
-- Creates Gmail draft emails for review
-- Supports multiple industries by simply changing the ICP
+- Multi-agent architecture
+- ICP-driven prospecting
+- CRM automation
+- Personalized outreach
 
 ## Business Impact
 
-- Automates lead generation based on a customizable Ideal Customer Profile (ICP).
-- Reduces manual prospect research by identifying and qualifying prospects with AI.
-- Eliminates repetitive CRM data entry through automated Pipedrive integration.
-- Produces personalized outreach emails at scale while maintaining human review through Gmail drafts.
-- Enables sales teams to launch targeted outbound campaigns faster and with greater consistency.
-  
+- Faster prospecting
+- Automated CRM updates
+- Personalized outreach at scale
+
 ## Key Skills Demonstrated
 
-- Multi-Agent AI Systems
+- Multi-Agent AI
 - Prompt Engineering
-- Lead Generation Automation
-- CRM Integration (Pipedrive)
-- AI-Assisted Sales Development
-- Google Workspace Automation
-- Workflow Orchestration with n8n
-
-## AI Agents
-
-### Business Development Manager
-
-Coordinates the entire workflow by analyzing the ICP and delegating tasks to specialized AI agents.
-
-### Prospecting Agent
-
-- Searches the web for qualified prospects
-- Identifies relevant decision-makers
-- Finds business email addresses
-- Returns up to three qualified leads
-
-### RevOps Agent
-
-Creates Person records inside Pipedrive CRM for each qualified prospect.
-
-### SDR Agent
-
-Generates personalized HTML email drafts for every prospect stored in the CRM.
+- CRM Automation
 
 ---
 
-# Workflow 2: AI Proposal Generator & Contract Automation
+# Workflow 3: AI Proposal Generator
 
 ## Objective
 
-Automatically generate a proposal, email it to the client, create a PandaDoc contract, and send it for electronic signature.
+Generate proposals, email clients, create PandaDoc contracts, and send them for e-signature.
 
 ## Workflow
+
 
 ```text
 Zapier Form
@@ -133,108 +174,99 @@ PandaDoc API
 
 ## Features
 
-- Captures client information using Zapier Forms
-- Generates customized proposal content with OpenAI
-- Creates branded Google Slides proposals from a template
-- Sends proposals automatically via Gmail
-- Creates PandaDoc contracts through the REST API
-- Waits for PandaDoc document processing
-- Automatically sends contracts for electronic signature
+- AI proposal generation
+- Google Slides automation
+- PandaDoc integration
+- Contract automation
 
----
 ## Business Impact
 
-- Reduces proposal creation time by automatically generating customized client proposals.
-- Standardizes proposal quality using reusable Google Slides templates.
-- Accelerates the sales cycle by automatically creating and sending contracts for e-signature.
-- Eliminates manual document creation and repetitive administrative tasks.
-- Improves the client onboarding experience through a seamless proposal-to-contract workflow.
+- Faster proposals
+- Standardized documents
+- Reduced administrative work
 
+## Key Skills Demonstrated
+
+- API Integration
+- Document Automation
+- Workflow Automation
+
+---
 
 # Technologies Used
 
-## AI
-
-- OpenAI GPT
-
-## Automation
-
+- OpenAI
 - n8n
 - Zapier
-
-## Google Workspace
-
-- Google Drive
-- Google Docs
-- Google Slides
-- Gmail
-
-## CRM
-
+- Airtable
 - Pipedrive
-
-## Document Automation
-
-- PandaDoc REST API
+- Google Workspace
+- PandaDoc API
+- REST APIs
 
 ---
 
 # Skills Demonstrated
 
+- AI Workflow Automation
 - AI Agent Design
-- Multi-Agent Orchestration
-- Prompt Engineering
-- Workflow Automation
-- REST API Integration
+- Workflow Orchestration
+- Airtable Application Design
 - CRM Automation
 - Business Process Automation
+- Human-in-the-Loop Systems
+- REST API Integration
 - Sales Automation
-- Lead Generation
-- Google Workspace Automation
-- Document Generation
-- API Authentication
-- AI-Powered Personalization
+
+---
+
+# Repository Structure
+
+```text
+.
+├── workflow-1-ai-airtable-sales-automation-platform/
+│   ├── assets/
+│   ├── docs/
+│   ├── workflows/
+│   ├── architecture.md
+│   └── README.md
+│
+├── workflow-2-ai-business-development/
+│   ├── icp-examples/
+│   ├── screenshots/
+│   ├── workflow-json/
+│   ├── architecture.md
+│   └── README.md
+│
+├── workflow-3-ai-proposal-generator/
+│   ├── assets/
+│   ├── screenshots/
+│   ├── architecture.md
+│   ├── prompt.md
+│   └── workflow.json
+```
 
 ---
 
 # Future Improvements
 
-- AI-powered lead scoring
-- CRM duplicate detection
-- Automated follow-up email sequences
-- Proposal version management
-- Calendar scheduling integration
-- Slack or Microsoft Teams notifications
-- Analytics dashboard
-- Retrieval-Augmented Generation (RAG) for company research
+- Lead enrichment
+- Email verification
+- Reply detection
+- AI lead scoring
+- Slack notifications
+- Analytics dashboards
+- Calendar integration
 
 ---
 
-# Author
+# About Me
 
 **Jerome Isaac Katigbak**
 
-Aspiring AI Automation Engineer passionate about building AI agents, workflow automations, and business process solutions using n8n, Zapier, OpenAI, and modern APIs.
+AI Automation Engineer specializing in workflow automation using n8n, Airtable, OpenAI, Zapier, and modern APIs.
 
----
 
-## Repository Structure
 
-```text
-.
-├── Workflow 1 - AI Business Development Manager
-│   ├── README.md
-│   ├── workflow.json
-│   ├── screenshots/
-│   └── prompts/
-│
-├── Workflow 2 - AI Proposal Generator & Contract Automation
-│   ├── README.md
-│   ├── workflow.json
-│   ├── screenshots/
-│   └── templates/
-│
-└── assets/
-    ├── architecture-diagrams
-    └── demo-images
-```
+
+
