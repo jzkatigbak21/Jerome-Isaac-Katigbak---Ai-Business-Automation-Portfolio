@@ -1,4 +1,4 @@
-<img width="1823" height="863" alt="repository banner" src="https://github.com/user-attachments/assets/17a5f66c-b4f0-4e87-884d-dccccfb5445e" />
+<img width="1693" height="929" alt="repository banner-1" src="https://github.com/user-attachments/assets/763a3998-2480-4ded-99b9-9b1a3fbe5305" />
 
 # AI Business Automation Portfolio
 
@@ -264,7 +264,7 @@ PandaDoc API
 
 **Jerome Isaac Katigbak**
 
-AI Automation Engineer specializing in workflow automation using n8n, Airtable, OpenAI, Zapier, and modern APIs.
+AI Automation Engineer passionate about building AI agents, workflow automations, and business process solutions using n8n, Zapier, OpenAI, and modern APIs.
 
 
 
