@@ -80,7 +80,7 @@ def run_batch(tickets: list[Ticket], client: TriageClient, max_workers: int = 5)
                 failures.append(ProcessingFailure(
                     ticket_id=ticket.ticket_id,
                     error=str(exc),
-                    attempts=5,
+                    attempts=getattr(exc, "attempts", 1),
                 ))
 
     return BatchOutcome(results=results, failures=failures)

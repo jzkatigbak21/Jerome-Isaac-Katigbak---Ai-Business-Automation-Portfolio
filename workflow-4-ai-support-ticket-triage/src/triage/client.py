@@ -18,7 +18,7 @@ import os
 
 import anthropic
 from tenacity import (
-    retry,
+    Retrying,
     retry_if_exception_type,
     stop_after_attempt,
     wait_exponential_jitter,
@@ -92,18 +92,13 @@ class TriageClient:
         )
         self.model = model or os.environ.get("CLAUDE_MODEL", "claude-sonnet-5")
 
-    @retry(
-        retry=retry_if_exception_type(RETRYABLE_EXCEPTIONS),
-        wait=wait_exponential_jitter(initial=1, max=30),
-        stop=stop_after_attempt(MAX_RETRY_ATTEMPTS),
-        before_sleep=_log_retry,
-        reraise=True,
-    )
-    def _call(self, system_prompt: str, user_prompt: str) -> dict:
+    def _request(self, system_prompt: str, user_prompt: str) -> dict:
+        # No `temperature` override: Claude Sonnet 5 rejects non-default
+        # sampling parameters outright (400 invalid_request_error). Output
+        # consistency comes from the forced tool schema, not sampling.
         response = self.client.messages.create(
             model=self.model,
             max_tokens=1024,
-            temperature=0,
             system=system_prompt,
             tools=[TOOL_SCHEMA],
             tool_choice={"type": "tool", "name": "submit_triage"},
@@ -115,6 +110,21 @@ class TriageClient:
         raise ValueError("Model response contained no tool_use block")
 
     def classify(self, system_prompt: str, user_prompt: str, ticket_id: str) -> TriageResult:
-        raw = self._call(system_prompt, user_prompt)
+        # A fresh Retrying instance per call (rather than the @retry decorator
+        # pattern) keeps retry statistics thread-local -- pipeline.py runs
+        # many classify() calls concurrently on one shared TriageClient, and
+        # a decorator-level Retrying object would race across threads.
+        retryer = Retrying(
+            retry=retry_if_exception_type(RETRYABLE_EXCEPTIONS),
+            wait=wait_exponential_jitter(initial=1, max=30),
+            stop=stop_after_attempt(MAX_RETRY_ATTEMPTS),
+            before_sleep=_log_retry,
+            reraise=True,
+        )
+        try:
+            raw = retryer(self._request, system_prompt, user_prompt)
+        except Exception as exc:
+            exc.attempts = retryer.statistics.get("attempt_number", 1)
+            raise
         raw.setdefault("ticket_id", ticket_id)
         return TriageResult.model_validate(raw)

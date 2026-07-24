@@ -69,10 +69,11 @@ def test_gives_up_after_max_attempts(mock_create, _mock_sleep):
     )
 
     client = TriageClient(api_key="test-key")
-    with pytest.raises(anthropic.RateLimitError):
+    with pytest.raises(anthropic.RateLimitError) as exc_info:
         client.classify("system", "user prompt", ticket_id="T-1")
 
     assert mock_create.call_count == 5
+    assert exc_info.value.attempts == 5
 
 
 @patch("anthropic.resources.messages.Messages.create")
@@ -82,7 +83,12 @@ def test_does_not_retry_non_retryable_error(mock_create):
     )
 
     client = TriageClient(api_key="test-key")
-    with pytest.raises(anthropic.BadRequestError):
+    with pytest.raises(anthropic.BadRequestError) as exc_info:
         client.classify("system", "user prompt", ticket_id="T-1")
 
+    # Non-retryable errors must not be reported as if 5 retries were burned --
+    # this reproduces a real bug: pipeline.py used to hardcode attempts=5
+    # for every failure, even a first-attempt 400 (e.g. Sonnet 5 rejecting
+    # a `temperature` param it doesn't accept).
     assert mock_create.call_count == 1
+    assert exc_info.value.attempts == 1
