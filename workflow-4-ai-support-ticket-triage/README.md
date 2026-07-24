@@ -28,7 +28,7 @@ one:
 ## Pipeline
 
 ```text
-CSV of tickets (or Shopify/Gorgias export)
+CSV of tickets, or a live pull from Gorgias (--source gorgias)
         v
 Bounded-concurrency batch dispatch (ThreadPoolExecutor)
         v
@@ -49,14 +49,15 @@ out/results.csv, out/human_review_queue.csv, out/failures.csv
 - Bounded concurrency batch processing, tested against 300 synthetic tickets
 - Keyword + confidence-floor safety net that can force a human-review flag even if the model didn't set one
 - Per-ticket failure isolation -- one bad ticket can't take down the batch
-- Offline unit test suite (retry logic, safety-net logic, batch failure isolation) -- no live API calls needed to verify correctness
+- Live Gorgias integration (`--source gorgias`) alongside the CSV path -- pulls real tickets via the Gorgias REST API and maps them into the same pipeline, tested against a real Shopify dev store + Gorgias trial
+- Offline unit test suite (retry logic, safety-net logic, batch failure isolation, Gorgias mapping) -- no live API calls needed to verify correctness
 
 ## Setup
 
 ```bash
 cd workflow-4-ai-support-ticket-triage
 pip install -r requirements.txt
-cp .env.example .env   # then fill in ANTHROPIC_API_KEY
+cp .env.example .env   # then fill in ANTHROPIC_API_KEY (and GORGIAS_* if using --source gorgias)
 ```
 
 ## Usage
@@ -70,6 +71,9 @@ python -m src.cli --input data/sample_tickets.csv --out-dir out --limit 20 --ver
 
 # Run the full batch triage
 python -m src.cli --input data/sample_tickets.csv --out-dir out --verbose
+
+# Or pull real tickets from a connected Gorgias account instead of a CSV
+python -m src.cli --source gorgias --out-dir out --verbose
 ```
 
 Output lands in `out/`:
@@ -123,7 +127,6 @@ isolation).
 
 ## Future Improvements
 
-- Replace CSV I/O with a live Gorgias/Shopify export pull
 - Push `human_review_queue.csv` into Airtable for the human-in-the-loop review step (tying this back into the rest of the portfolio's pattern)
 - Async I/O (`asyncio` + `AsyncAnthropic`) instead of threads for higher throughput
 - Structured logging/metrics export instead of console summary

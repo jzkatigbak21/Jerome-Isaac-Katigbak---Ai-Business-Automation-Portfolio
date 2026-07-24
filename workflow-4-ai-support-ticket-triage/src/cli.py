@@ -2,6 +2,7 @@
 
 Usage:
     python -m src.cli --input data/sample_tickets.csv --out-dir out/
+    python -m src.cli --source gorgias --out-dir out/
 """
 
 from __future__ import annotations
@@ -17,6 +18,7 @@ from dotenv import load_dotenv
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from src.triage.client import TriageClient
+from src.triage.gorgias_client import fetch_tickets
 from src.triage.io_utils import load_tickets, write_failures, write_results
 from src.triage.pipeline import run_batch, summarize
 
@@ -25,7 +27,11 @@ def main() -> int:
     load_dotenv()
 
     parser = argparse.ArgumentParser(description="Batch-triage support tickets with Claude.")
-    parser.add_argument("--input", required=True, help="Path to input CSV of tickets.")
+    parser.add_argument(
+        "--source", choices=["csv", "gorgias"], default="csv",
+        help="Where to pull tickets from.",
+    )
+    parser.add_argument("--input", help="Path to input CSV of tickets (required for --source csv).")
     parser.add_argument("--out-dir", default="out", help="Directory to write results into.")
     parser.add_argument(
         "--max-workers", type=int,
@@ -48,10 +54,22 @@ def main() -> int:
         print("ANTHROPIC_API_KEY is not set. Copy .env.example to .env and fill it in.", file=sys.stderr)
         return 1
 
-    tickets = load_tickets(args.input)
+    if args.source == "gorgias":
+        missing = [v for v in ("GORGIAS_SUBDOMAIN", "GORGIAS_EMAIL", "GORGIAS_API_KEY") if v not in os.environ]
+        if missing:
+            print(f"Missing Gorgias env vars: {', '.join(missing)}. Add them to .env.", file=sys.stderr)
+            return 1
+        tickets = fetch_tickets()
+        print(f"Pulled {len(tickets)} tickets from Gorgias")
+    else:
+        if not args.input:
+            print("--input is required when --source csv", file=sys.stderr)
+            return 1
+        tickets = load_tickets(args.input)
+        print(f"Loaded {len(tickets)} tickets from {args.input}")
+
     if args.limit is not None:
         tickets = tickets[:args.limit]
-    print(f"Loaded {len(tickets)} tickets from {args.input}")
 
     client = TriageClient()
     outcome = run_batch(tickets, client, max_workers=args.max_workers)
