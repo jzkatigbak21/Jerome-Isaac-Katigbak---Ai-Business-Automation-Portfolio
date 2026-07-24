@@ -39,7 +39,7 @@ class BatchOutcome:
     failures: list[ProcessingFailure]
 
 
-def _apply_safety_net(ticket: Ticket, result: TriageResult) -> TriageResult:
+def apply_safety_net(ticket: Ticket, result: TriageResult) -> TriageResult:
     reasons = []
     if ESCALATION_KEYWORDS.search(ticket.text):
         reasons.append("escalation keyword detected in raw message")
@@ -57,10 +57,15 @@ def _apply_safety_net(ticket: Ticket, result: TriageResult) -> TriageResult:
     return result
 
 
-def _process_one(client: TriageClient, ticket: Ticket) -> TriageResult:
+def process_one(client: TriageClient, ticket: Ticket) -> TriageResult:
+    """Classify a single ticket end-to-end (prompt -> Claude -> safety net).
+    Used by both the batch loop below and the real-time webhook receiver --
+    the two entry points share this so classification behavior can't drift
+    between them.
+    """
     user_prompt = build_user_prompt(ticket.ticket_id, ticket.customer_name, ticket.channel, ticket.text)
     result = client.classify(SYSTEM_PROMPT, user_prompt, ticket.ticket_id)
-    return _apply_safety_net(ticket, result)
+    return apply_safety_net(ticket, result)
 
 
 def run_batch(tickets: list[Ticket], client: TriageClient, max_workers: int = 5) -> BatchOutcome:
@@ -69,7 +74,7 @@ def run_batch(tickets: list[Ticket], client: TriageClient, max_workers: int = 5)
 
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         future_to_ticket = {
-            executor.submit(_process_one, client, ticket): ticket for ticket in tickets
+            executor.submit(process_one, client, ticket): ticket for ticket in tickets
         }
         for future in tqdm(as_completed(future_to_ticket), total=len(tickets), desc="Triaging tickets"):
             ticket = future_to_ticket[future]

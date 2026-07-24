@@ -12,6 +12,13 @@ and concurrency handling, and its own test suite. n8n/Airtable/CRM tools
 are a natural next step as the *output destination* (push
 `human_review_queue.csv` into Airtable or Gorgias), not the engine.
 
+Three ways to feed it tickets, in increasing order of "how this would
+actually run in production": a CSV batch, a polling pull from a live
+Gorgias account (`--source gorgias`), or a real-time webhook receiver
+(`src/webhook_server.py`) that Gorgias calls the instant a ticket is
+created. See "Real-time webhook" below for why polling isn't the final
+shape for live triage.
+
 See [`architecture.md`](architecture.md) for the design rationale.
 
 ## Objective
@@ -28,9 +35,11 @@ one:
 ## Pipeline
 
 ```text
-CSV of tickets, or a live pull from Gorgias (--source gorgias)
+CSV of tickets, a poll of Gorgias (--source gorgias), or a live webhook
+(src/webhook_server.py) -- all three converge on process_one()
         v
-Bounded-concurrency batch dispatch (ThreadPoolExecutor)
+Batch path fans out across a bounded ThreadPoolExecutor;
+the webhook path calls process_one() directly, per ticket, in real time
         v
 Claude API -- forced tool_use call per ticket
   (classify + draft reply in one request)
@@ -39,7 +48,7 @@ Retry w/ exponential backoff + jitter on 429 / timeout / 5xx
         v
 Safety-net override (keyword + confidence floor)
         v
-out/results.csv, out/human_review_queue.csv, out/failures.csv
+out/results.csv (batch) or out/live_results.csv (webhook)
 ```
 
 ## Features
@@ -50,7 +59,8 @@ out/results.csv, out/human_review_queue.csv, out/failures.csv
 - Keyword + confidence-floor safety net that can force a human-review flag even if the model didn't set one
 - Per-ticket failure isolation -- one bad ticket can't take down the batch
 - Live Gorgias integration (`--source gorgias`) alongside the CSV path -- pulls real tickets via the Gorgias REST API and maps them into the same pipeline, tested against a real Shopify dev store + Gorgias trial
-- Offline unit test suite (retry logic, safety-net logic, batch failure isolation, Gorgias mapping) -- no live API calls needed to verify correctness
+- Real-time webhook receiver (`src/webhook_server.py`) -- classifies a ticket the instant Gorgias creates it, instead of waiting for the next poll
+- Offline unit test suite (retry logic, safety-net logic, batch failure isolation, Gorgias mapping, webhook payload handling) -- no live API calls needed to verify correctness
 
 ## Setup
 
@@ -80,6 +90,40 @@ Output lands in `out/`:
 - `results.csv` -- every ticket with its classification and draft reply
 - `human_review_queue.csv` -- the subset flagged for a human
 - `failures.csv` -- tickets that failed after retries were exhausted (if any)
+
+## Real-time webhook (optional)
+
+`--source gorgias` polls -- it pulls whatever tickets exist *right now*.
+That's fine for batch/backfill, but a real support team needs a reply
+drafted within seconds of a ticket arriving, not whenever the next poll
+happens to run. `src/webhook_server.py` is the production-shape
+alternative: a small FastAPI receiver that Gorgias calls the instant a
+ticket is created, classifying that one ticket in real time instead of
+waiting for a batch.
+
+```bash
+# 1. Run the receiver locally
+uvicorn src.webhook_server:app --reload --port 8000
+
+# 2. Expose it to the internet (Gorgias is a live SaaS, it can't reach localhost)
+ngrok http 8000
+```
+
+Then in Gorgias, create an **Automation**: trigger "when a ticket is
+created," action "call a webhook" pointing at
+`https://<your-ngrok-id>.ngrok-free.app/webhook/gorgias`, with a JSON body
+containing the ticket ID (Gorgias's automation builder shows the available
+merge tags -- something like `{"ticket_id": "{{ ticket.id }}"}`). The
+receiver defensively accepts a few common payload shapes (`ticket_id`,
+`id`, `ticket.id`, `data.id`) since exactly what gets sent depends on how
+the automation is configured.
+
+Each processed ticket is logged to `out/live_results.csv` and printed to
+the console as it happens -- e.g. `Ticket GOR-74592144 (Francesca Mejos) ->
+flagged for review [other/high]`. Set `WEBHOOK_SECRET` in `.env` to require
+a shared-secret header on incoming requests (Gorgias's webhook action lets
+you add custom headers) -- otherwise the endpoint accepts unauthenticated
+requests, fine for a local demo, not for anything exposed longer-term.
 
 ## Tests
 

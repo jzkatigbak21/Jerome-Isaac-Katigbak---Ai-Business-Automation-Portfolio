@@ -6,7 +6,7 @@ these run instantly and offline.
 from __future__ import annotations
 
 from src.triage.io_utils import Ticket
-from src.triage.pipeline import _apply_safety_net, run_batch
+from src.triage.pipeline import apply_safety_net, run_batch
 from src.triage.schema import Entities, TriageResult
 
 
@@ -31,7 +31,7 @@ def test_safety_net_flags_escalation_keywords_even_if_model_did_not():
     ticket = Ticket("T-1", "Jane Doe", "email", "If this isn't fixed I'm calling my lawyer.")
     result = _make_result(needs_human_review=False)
 
-    flagged = _apply_safety_net(ticket, result)
+    flagged = apply_safety_net(ticket, result)
 
     assert flagged.needs_human_review is True
     assert "escalation keyword" in flagged.review_reason
@@ -42,7 +42,7 @@ def test_safety_net_flags_low_confidence():
     ticket = Ticket("T-2", "Jane Doe", "email", "Something about my order maybe?")
     result = _make_result(confidence=0.4, needs_human_review=False)
 
-    flagged = _apply_safety_net(ticket, result)
+    flagged = apply_safety_net(ticket, result)
 
     assert flagged.needs_human_review is True
     assert "confidence" in flagged.review_reason
@@ -52,7 +52,7 @@ def test_safety_net_leaves_clean_tickets_alone():
     ticket = Ticket("T-3", "Jane Doe", "email", "Love the product, thanks!")
     result = _make_result(confidence=0.95, needs_human_review=False)
 
-    unchanged = _apply_safety_net(ticket, result)
+    unchanged = apply_safety_net(ticket, result)
 
     assert unchanged.needs_human_review is False
     assert unchanged.draft_reply == result.draft_reply
