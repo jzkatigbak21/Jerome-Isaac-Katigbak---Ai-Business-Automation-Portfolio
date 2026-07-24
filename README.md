@@ -4,9 +4,9 @@
 
 ## Overview
 
-This repository showcases three production-style AI automation projects built to streamline business development, outbound sales, and proposal generation. Each project demonstrates how AI, workflow automation, APIs, and business applications can be combined to solve real operational problems.
+This repository showcases four production-style AI automation projects covering business development, outbound sales, proposal generation, and support ticket triage. Each project demonstrates how AI, workflow automation, APIs, and business applications can be combined to solve real operational problems.
 
-The portfolio focuses on practical implementations using **n8n**, **Airtable**, **OpenAI**, **Zapier**, and modern APIs with an emphasis on modular workflow design and human-in-the-loop automation.
+The portfolio focuses on practical implementations using **n8n**, **Airtable**, **OpenAI**, **Zapier**, and modern APIs with an emphasis on modular workflow design and human-in-the-loop automation. Workflow 4 is built differently on purpose: no low-code platform in the pipeline, just Python and the **Claude API** directly, with its own retry/concurrency handling and test suite -- built end-to-end with **Claude Code**.
 
 ---
 
@@ -193,8 +193,68 @@ PandaDoc API
 
 ---
 
+# Workflow 4: AI Support Ticket Triage
+
+## Objective
+
+Batch-classify support tickets/reviews (sentiment, urgency, category,
+entities), draft ready-to-send replies for straightforward cases, and
+flag sensitive tickets for human review -- built directly against the
+Claude API with Claude Code, not orchestrated through a low-code
+platform.
+
+## Workflow
+
+```text
+CSV of Tickets
+(Shopify/Gorgias export or synthetic dataset)
+        ↓
+Bounded-Concurrency Batch Dispatch
+(ThreadPoolExecutor, rate-limit aware)
+        ↓
+Claude API
+(Forced tool_use: classify + draft reply in one call)
+        ↓
+Retry with Backoff
+(Exponential backoff + jitter on 429 / timeout / 5xx)
+        ↓
+Safety-Net Override
+(Keyword + confidence-floor check forces human review)
+        ↓
+CSV Output
+(results.csv / human_review_queue.csv / failures.csv)
+```
+
+## Features
+
+- Structured output via forced Claude tool-use (no brittle JSON parsing)
+- Exponential backoff + jitter retries on rate limits, timeouts, 5xx errors
+- Bounded concurrency batch processing, tested at 300-ticket volume
+- Keyword + confidence-floor safety net independent of the model's own judgment
+- Per-ticket failure isolation
+- Offline unit test suite covering retry logic, safety-net logic, and batch failure isolation
+
+## Business Impact
+
+- Cuts manual triage time on repetitive tickets
+- Keeps sensitive/risky tickets in front of a human before anything is sent
+- Batch-processes at volume instead of one ticket at a time
+
+## Key Skills Demonstrated
+
+- Claude API Integration (structured output, tool use)
+- Rate Limit / Retry / Error Handling
+- Concurrent Batch Processing
+- Prompt Design
+- Defensive Engineering
+- Automated Testing
+- Built with Claude Code
+
+---
+
 # Technologies Used
 
+- Claude API / Claude Code
 - OpenAI
 - n8n
 - Zapier
@@ -217,6 +277,9 @@ PandaDoc API
 - Human-in-the-Loop Systems
 - REST API Integration
 - Sales Automation
+- Claude API Integration & Structured Output
+- Rate Limit / Retry / Error Handling
+- Automated Testing (mocked external dependencies)
 
 ---
 
@@ -244,6 +307,16 @@ PandaDoc API
 │   ├── architecture.md
 │   ├── prompt.md
 │   └── workflow.json
+│
+├── workflow-4-ai-support-ticket-triage/
+│   ├── data/
+│   ├── scripts/
+│   ├── src/
+│   │   ├── cli.py
+│   │   └── triage/
+│   ├── tests/
+│   ├── architecture.md
+│   └── README.md
 ```
 
 ---
@@ -257,6 +330,8 @@ PandaDoc API
 - Slack notifications
 - Analytics dashboards
 - Calendar integration
+- Live Gorgias/Shopify ticket ingestion for Workflow 4
+- Push Workflow 4's human-review queue into Airtable
 
 ---
 
