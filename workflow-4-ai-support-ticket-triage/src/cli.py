@@ -32,6 +32,10 @@ def main() -> int:
         default=int(os.environ.get("MAX_CONCURRENT_REQUESTS", 5)),
         help="Max concurrent API requests.",
     )
+    parser.add_argument(
+        "--limit", type=int, default=None,
+        help="Only process the first N tickets (useful for a cheap smoke test before a full run).",
+    )
     parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args()
 
@@ -45,6 +49,8 @@ def main() -> int:
         return 1
 
     tickets = load_tickets(args.input)
+    if args.limit is not None:
+        tickets = tickets[:args.limit]
     print(f"Loaded {len(tickets)} tickets from {args.input}")
 
     client = TriageClient()

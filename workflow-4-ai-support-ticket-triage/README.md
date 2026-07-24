@@ -65,7 +65,10 @@ cp .env.example .env   # then fill in ANTHROPIC_API_KEY
 # Generate a fresh synthetic dataset (optional, one is already in data/)
 python scripts/generate_sample_data.py --rows 300 --out data/sample_tickets.csv
 
-# Run the batch triage
+# Cheap smoke test on the first 20 tickets before spending on a full run
+python -m src.cli --input data/sample_tickets.csv --out-dir out --limit 20 --verbose
+
+# Run the full batch triage
 python -m src.cli --input data/sample_tickets.csv --out-dir out --verbose
 ```
 
