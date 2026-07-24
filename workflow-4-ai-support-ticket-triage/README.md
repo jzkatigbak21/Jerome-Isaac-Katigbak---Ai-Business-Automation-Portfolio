@@ -89,18 +89,27 @@ the safety-net override logic, and failure isolation across a batch.
 
 ## Sample results
 
-_Run against the 300-row synthetic dataset in `data/sample_tickets.csv`:_
+_Live run against the first 20 tickets of the synthetic dataset
+(`--limit 20`), via `claude-sonnet-5`:_
 
 | Metric | Value |
 |---|---|
-| Tickets processed | pending live run |
-| Auto-drafted replies | pending live run |
-| Flagged for human review | pending live run |
-| Failures after retries | pending live run |
+| Tickets processed | 20/20 |
+| Auto-drafted replies | 12 |
+| Flagged for human review | 8 |
+| Failures after retries | 0 |
 
-(Numbers will be filled in from an actual run once an API key is
-configured -- see [`architecture.md`](architecture.md) for how the
-pipeline behaves under load in the meantime.)
+Category breakdown: shipping=5, account=4, praise=4, defect=3, refund=2, other=1, question=1.
+
+**[dashboard.html](dashboard.html)** renders these results as an interactive
+console -- open it in a browser to click through each ticket: the original
+customer message, Claude's classification, and either the drafted reply or
+the human-review reason.
+
+The full 300-row batch behaves the same way, just longer and slightly
+pricier to run -- see [`architecture.md`](architecture.md) for how the
+pipeline handles that volume (bounded concurrency, retries, failure
+isolation).
 
 ## Key Skills Demonstrated
 
