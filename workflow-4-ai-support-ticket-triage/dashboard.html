@@ -18,6 +18,7 @@
     --warn-soft: #fbf0dc;
     --critical: #c03a2b;
     --critical-soft: #fbe7e4;
+    --live: #b8790a;
     --shadow: 0 1px 2px rgba(20, 24, 36, 0.04), 0 8px 24px rgba(20, 24, 36, 0.06);
     --font-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", "Roboto Mono", "JetBrains Mono", Consolas, "Liberation Mono", monospace;
     --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
@@ -42,6 +43,7 @@
       --warn-soft: #362a10;
       --critical: #f0685a;
       --critical-soft: #38191b;
+      --live: #e0a83c;
       --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 32px rgba(0, 0, 0, 0.35);
     }
   }
@@ -64,6 +66,7 @@
     --warn-soft: #362a10;
     --critical: #f0685a;
     --critical-soft: #38191b;
+    --live: #e0a83c;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 32px rgba(0, 0, 0, 0.35);
   }
 
@@ -85,6 +88,7 @@
     --warn-soft: #fbf0dc;
     --critical: #c03a2b;
     --critical-soft: #fbe7e4;
+    --live: #b8790a;
     --shadow: 0 1px 2px rgba(20, 24, 36, 0.04), 0 8px 24px rgba(20, 24, 36, 0.06);
   }
 
@@ -108,7 +112,7 @@
     justify-content: space-between;
     gap: 20px;
     padding-bottom: 20px;
-    margin-bottom: 22px;
+    margin-bottom: 18px;
     border-bottom: 1px solid var(--line);
   }
 
@@ -154,6 +158,76 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--ink-faint);
+  }
+
+  /* ---------- Dataset tabs ---------- */
+
+  .dataset-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+
+  .dataset-tab {
+    flex: 1;
+    min-width: 220px;
+    text-align: left;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 16px;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    transition: border-color 0.12s ease, background 0.12s ease;
+  }
+
+  .dataset-tab:hover { border-color: var(--line-strong); }
+
+  .dataset-tab.active {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  .dataset-tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .dataset-tab .dt-name {
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  .dataset-tab .dt-sub {
+    margin-top: 2px;
+    font-size: 11.5px;
+    color: var(--ink-muted);
+  }
+
+  .live-dot {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--live);
+    padding: 3px 7px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--live) 45%, var(--line));
+    flex: none;
+  }
+
+  .live-dot::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--live);
   }
 
   /* ---------- Console layout ---------- */
@@ -399,6 +473,11 @@
     line-height: 1.55;
   }
 
+  .incoming.system-note {
+    font-style: italic;
+    color: var(--ink-muted);
+  }
+
   .readout {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -511,23 +590,16 @@
         <p>Workflow 4 · Claude Sonnet 5 + Claude Code</p>
       </div>
     </div>
-    <div class="stats">
-      <div class="stat"><div class="n">20/20</div><div class="l">Processed</div></div>
-      <div class="stat"><div class="n good">12</div><div class="l">Auto-drafted</div></div>
-      <div class="stat"><div class="n warn">8</div><div class="l">Flagged</div></div>
-      <div class="stat"><div class="n">0</div><div class="l">Failed</div></div>
-    </div>
+    <div class="stats" id="stats"></div>
   </div>
+
+  <div class="dataset-bar" id="datasetBar"></div>
 
   <div class="console">
     <aside class="sidebar">
       <div class="panel-head">
         <p class="eyebrow">Resolution</p>
-        <div class="chips" id="statusChips">
-          <button class="chip active" data-filter="all">All · 20</button>
-          <button class="chip" data-filter="resolved">Auto-drafted · 12</button>
-          <button class="chip" data-filter="flagged">Flagged · 8</button>
-        </div>
+        <div class="chips" id="statusChips"></div>
       </div>
       <div class="catbars">
         <p class="eyebrow">By category</p>
@@ -556,149 +628,260 @@
     question: "Question",
     account: "Account",
     other: "Escalation",
+    system: "System",
   };
 
-  const tickets = [
-    { id: "T-1000", customer: "Liam Reyes", channel: "shopify_review", order: "356787", product: null,
-      text: "I can't log into my account to check order #356787. Password reset email never arrives.",
-      sentiment: "negative", urgency: "medium", category: "account", confidence: 0.75, resolved: false,
-      summary: "Customer cannot log into their account to check order #356787 because the password reset email never arrives.",
-      reviewReason: "Ticket involves account access/login issue which may require account/payment data verification, so a human should verify identity and investigate the email delivery issue.",
-      draft: null },
-    { id: "T-1001", customer: "Liam Okafor", channel: "instagram_dm", order: "191161", product: "Standing Desk Mat",
-      text: "The Standing Desk Mat from order #191161 was a great gift idea, my mom loved it!",
-      sentiment: "positive", urgency: "low", category: "praise", confidence: 0.95, resolved: true,
-      summary: "Customer is happy that the Standing Desk Mat from order #191161 was a great gift for their mom.",
-      reviewReason: null,
-      draft: "Hi Liam, thank you so much for sharing this — it made our day! We're so glad the Standing Desk Mat from order #191161 was such a hit as a gift for your mom. We'll be sure to pass along your kind words to the team. Thanks for being a customer! - The Support Team" },
-    { id: "T-1002", customer: "Maria Smith", channel: "email", order: "343962", product: "Weighted Blanket",
-      text: "It's been 18 days and my order #343962 still shows 'label created'. I needed the Weighted Blanket for a trip this weekend. What is going on?",
-      sentiment: "negative", urgency: "high", category: "shipping", confidence: 0.85, resolved: true,
-      summary: "Customer's order #343962 has been stuck at “label created” for 18 days and they need the Weighted Blanket for a trip this weekend.",
-      reviewReason: null,
-      draft: "Hi Maria, I'm so sorry to hear that order #343962 for your Weighted Blanket has been stuck at “label created” for 18 days -- that's not the experience we want for you, especially with your trip coming up this weekend. We're looking into this with our carrier right away to find out what's causing the delay, and if we can't get you a real tracking update within 24 hours, we'll send a free replacement via expedited shipping or issue a full refund, whichever you prefer. We'll follow up with an update very soon. Thank you for your patience. The Support Team" },
-    { id: "T-1003", customer: "Elena Nguyen", channel: "instagram_dm", order: "539898", product: "Standing Desk Mat",
-      text: "Does the Standing Desk Mat come in other colors? Thinking about ordering another one after order #539898.",
-      sentiment: "positive", urgency: "low", category: "question", confidence: 0.6, resolved: false,
-      summary: "Customer is asking whether the Standing Desk Mat is available in other colors before placing another order.",
-      reviewReason: "Requires current product catalog/color availability information the agent doesn't have confirmed data on, so a factual reply can't be confidently drafted.",
-      draft: null },
-    { id: "T-1004", customer: "Grace Santos", channel: "instagram_dm", order: "895667", product: null,
-      text: "Can I change the shipping address for order #895667? It hasn't shipped yet I think.",
-      sentiment: "neutral", urgency: "medium", category: "account", confidence: 0.85, resolved: false,
-      summary: "Customer wants to change the shipping address for order #895667 before it ships.",
-      reviewReason: "Request involves changing account/shipping address details on an order, which requires human verification before action.",
-      draft: null },
-    { id: "T-1005", customer: "Grace Khan", channel: "email", order: "900581", product: "Weighted Blanket",
-      text: "Requesting a refund for order #900581, the Weighted Blanket doesn't fit as expected. What's your return policy?",
-      sentiment: "neutral", urgency: "low", category: "refund", confidence: 0.7, resolved: false,
-      summary: "Customer wants to return/refund the Weighted Blanket from order #900581 because it doesn't fit as expected and is asking about the return policy.",
-      reviewReason: "Return policy specifics (timeframe, condition requirements, fees) aren't provided in our reference materials, so an agent needs to confirm exact policy before promising a refund.",
-      draft: null },
-    { id: "T-1006", customer: "Chloe Smith", channel: "gorgias", order: "988662", product: "Wireless Earbuds Pro",
-      text: "Tracking for order #988662 hasn't updated in 13 days. Can someone check on the Wireless Earbuds Pro?",
-      sentiment: "negative", urgency: "medium", category: "shipping", confidence: 0.8, resolved: true,
-      summary: "Customer's tracking for order #988662 (Wireless Earbuds Pro) has not updated in 13 days and they want a status check.",
-      reviewReason: null,
-      draft: "Hi Chloe,\n\nSorry for the worry this has caused! We know a stalled tracking update is frustrating, especially after 13 days with no movement. We're looking into the shipment for your Wireless Earbuds Pro (order #988662) right now and will follow up within 24 hours with an updated tracking status. If it turns out the package is lost in transit, we'll send a replacement right away at no cost to you.\n\nThanks for your patience!\n\nThe Support Team" },
-    { id: "T-1007", customer: "James Nguyen", channel: "instagram_dm", order: "662275", product: "Insulated Water Bottle",
-      text: "Order #662275: the Insulated Water Bottle caught a weird smell out of the box and part of it is discolored. Is this even safe to use?",
-      sentiment: "negative", urgency: "high", category: "defect", confidence: 0.75, resolved: false,
-      summary: "Customer reports their Insulated Water Bottle (order #662275) arrived with an unusual smell and discoloration and is asking if it's safe to use.",
-      reviewReason: "Customer raises a safety concern about the product (odd smell and discoloration, questioning safety), requiring human assessment before responding.",
-      draft: null },
-    { id: "T-1008", customer: "Diego Brown", channel: "shopify_review", order: "479201", product: "Cast Iron Skillet",
-      text: "Tracking for order #479201 hasn't updated in 20 days. Can someone check on the Cast Iron Skillet?",
-      sentiment: "negative", urgency: "medium", category: "shipping", confidence: 0.85, resolved: true,
-      summary: "Customer's tracking for order #479201 (Cast Iron Skillet) hasn't updated in 20 days and they want a status check.",
-      reviewReason: null,
-      draft: "Hi Diego, thanks for reaching out and sorry for the worry this has caused. We'll look into the tracking for order #479201 (Cast Iron Skillet) right away, since 20 days without an update isn't normal. If it turns out the package is lost in transit, we'll send a replacement or issue a refund, whichever you prefer. We'll follow up with an update within 24 hours. Thanks for your patience! - The Support Team" },
-    { id: "T-1009", customer: "Aisha Reyes", channel: "email", order: "910620", product: "Weighted Blanket",
-      text: "The Weighted Blanket from order #910620 was a great gift idea, my mom loved it!",
-      sentiment: "positive", urgency: "low", category: "praise", confidence: 0.97, resolved: true,
-      summary: "Customer shared positive feedback that the Weighted Blanket from order #910620 was a hit as a gift.",
-      reviewReason: null,
-      draft: "Hi Aisha,\n\nThank you so much for sharing this—it made our day! We're so glad the Weighted Blanket from order #910620 was such a hit as a gift for your mom.\n\nWe'll pass along your kind words to the team. Thanks for choosing us!\n\nWarmly,\nThe Support Team" },
-    { id: "T-1010", customer: "Mateo Brown", channel: "instagram_dm", order: "498591", product: "Trail Runner Sneakers",
-      text: "Just checking the ETA on order #498591, the Trail Runner Sneakers page said 5-7 days.",
-      sentiment: "neutral", urgency: "low", category: "shipping", confidence: 0.75, resolved: true,
-      summary: "Customer is asking for the delivery ETA on their Trail Runner Sneakers order.",
-      reviewReason: null,
-      draft: "Hi Mateo! Thanks for checking in. Order #498591 for your Trail Runner Sneakers is on track within the 5-7 day window. You'll receive a tracking update via email as soon as it ships (or if it's already shipped, check your inbox for the tracking link). Let us know if you need anything else! - The Support Team" },
-    { id: "T-1011", customer: "Ethan Khan", channel: "gorgias", order: "472528", product: null,
-      text: "I can't log into my account to check order #472528. Password reset email never arrives.",
-      sentiment: "negative", urgency: "medium", category: "account", confidence: 0.75, resolved: false,
-      summary: "Customer cannot log into their account to check order #472528 because the password reset email never arrives.",
-      reviewReason: "Ticket involves account access/login issue, which requires verification of account details before resolving.",
-      draft: null },
-    { id: "T-1012", customer: "Aisha Rossi", channel: "shopify_review", order: "660086", product: "Ceramic Pour-Over Kettle",
-      text: "The Ceramic Pour-Over Kettle from order #660086 was a great gift idea, my mom loved it!",
-      sentiment: "positive", urgency: "low", category: "praise", confidence: 0.95, resolved: true,
-      summary: "Customer is happy that the Ceramic Pour-Over Kettle from order #660086 was a great gift.",
-      reviewReason: null,
-      draft: "Hi Aisha, thank you so much for the kind words! We're thrilled to hear your mom loved the Ceramic Pour-Over Kettle from order #660086 - that makes our day. Thanks for choosing us for such a special gift! - The Support Team" },
-    { id: "T-1013", customer: "Chloe Novak", channel: "email", order: "330283", product: "Standing Desk Mat",
-      text: "Five stars for the Standing Desk Mat. Ordered a second one already. Great customer service on order #330283.",
-      sentiment: "positive", urgency: "low", category: "praise", confidence: 0.97, resolved: true,
-      summary: "Customer is happy with the Standing Desk Mat and service on order #330283, and has ordered a second one.",
-      reviewReason: null,
-      draft: "Hi Chloe, thank you so much for the kind words! We're thrilled you're loving the Standing Desk Mat and that your experience with order #330283 was a great one. Enjoy your second one when it arrives! - The Support Team" },
-    { id: "T-1014", customer: "James Santos", channel: "email", order: "520651", product: "Wireless Earbuds Pro",
-      text: "My Wireless Earbuds Pro from order #520651 stopped working after 10 days of light use. Really disappointed.",
-      sentiment: "negative", urgency: "medium", category: "defect", confidence: 0.85, resolved: true,
-      summary: "Customer's Wireless Earbuds Pro (order #520651) stopped working after only 10 days of light use.",
-      reviewReason: null,
-      draft: "Hi James,\n\nI'm sorry to hear your Wireless Earbuds Pro from order #520651 stopped working after such light use - that's definitely not the experience we want you to have. We'd like to send you a replacement right away at no cost, or issue a full refund if you'd prefer. Just reply and let us know which you'd like, and we'll get it sorted immediately.\n\nThe Support Team" },
-    { id: "T-1015", customer: "Priya Garcia", channel: "shopify_review", order: "514850", product: "Insulated Water Bottle",
-      text: "My Insulated Water Bottle from order #514850 stopped working after 16 days of light use. Really disappointed.",
-      sentiment: "negative", urgency: "medium", category: "defect", confidence: 0.85, resolved: true,
-      summary: "Customer's Insulated Water Bottle from order #514850 stopped working after only 16 days of light use.",
-      reviewReason: null,
-      draft: "Hi Priya, I'm sorry to hear your Insulated Water Bottle from order #514850 stopped working after such light use - that's not the experience we want you to have. We'd like to send you a replacement right away at no cost to you; please reply confirming your shipping address is still the same, and we'll get it out to you. Thanks for your patience! - The Support Team" },
-    { id: "T-1016", customer: "Sofia Garcia", channel: "instagram_dm", order: "665158", product: "Standing Desk Mat",
-      text: "I want to cancel order #665158 and get a full refund. The Standing Desk Mat is not what was advertised.",
-      sentiment: "negative", urgency: "medium", category: "refund", confidence: 0.75, resolved: true,
-      summary: "Customer wants to cancel order #665158 and receive a full refund because the Standing Desk Mat did not match its advertised description.",
-      reviewReason: null,
-      draft: "Hi Sofia, thanks for reaching out, and I'm sorry the Standing Desk Mat didn't match what was advertised. We've cancelled order #665158 and processed a full refund to your original payment method — you should see it reflected within 5-7 business days. If you have any trouble seeing it, just let us know! - The Support Team" },
-    { id: "T-1017", customer: "Chloe Cruz", channel: "instagram_dm", order: "245051", product: null,
-      text: "This is the THIRD time I'm emailing about order #245051. If this isn't resolved by Friday I'm disputing the charge with my bank and posting about it.",
-      sentiment: "negative", urgency: "high", category: "other", confidence: 0.6, resolved: false,
-      summary: "Customer says this is the third time contacting about order #245051 and threatens a bank dispute and public posting if not resolved by Friday.",
-      reviewReason: "Repeat/escalated complaint (third time emailing) combined with chargeback threat and threat to post publicly.",
-      draft: null },
-    { id: "T-1018", customer: "James Brown", channel: "instagram_dm", order: "260265", product: "Trail Runner Sneakers",
-      text: "Tracking for order #260265 hasn't updated in 7 days. Can someone check on the Trail Runner Sneakers?",
-      sentiment: "neutral", urgency: "medium", category: "shipping", confidence: 0.85, resolved: true,
-      summary: "Customer reports tracking for order #260265 (Trail Runner Sneakers) has not updated in 7 days and wants a status check.",
-      reviewReason: null,
-      draft: "Hi James, thanks for flagging this and sorry for the worry! We'll look into the tracking for your Trail Runner Sneakers (order #260265) right away and follow up with a carrier update within 24 hours. If it turns out the package is stuck, we'll get a replacement or refund moving for you right away. Thanks for your patience! - The Support Team" },
-    { id: "T-1019", customer: "Aisha Kim", channel: "gorgias", order: "724834", product: null,
-      text: "Can I change the shipping address for order #724834? It hasn't shipped yet I think.",
-      sentiment: "neutral", urgency: "medium", category: "account", confidence: 0.8, resolved: false,
-      summary: "Customer wants to change the shipping address on order #724834 before it ships.",
-      reviewReason: "Request involves changing account/shipping address details, which requires human verification before making changes.",
-      draft: null },
-  ];
+  const DATASETS = {
+    synthetic: {
+      label: "Synthetic Dataset",
+      sub: "20 template-generated tickets",
+      live: false,
+      tickets: [
+        { id: "T-1000", customer: "Liam Reyes", channel: "shopify_review", order: "356787", product: null,
+          text: "I can't log into my account to check order #356787. Password reset email never arrives.",
+          sentiment: "negative", urgency: "medium", category: "account", confidence: 0.75, resolved: false,
+          summary: "Customer cannot log into their account to check order #356787 because the password reset email never arrives.",
+          reviewReason: "Ticket involves account access/login issue which may require account/payment data verification, so a human should verify identity and investigate the email delivery issue.",
+          draft: null },
+        { id: "T-1001", customer: "Liam Okafor", channel: "instagram_dm", order: "191161", product: "Standing Desk Mat",
+          text: "The Standing Desk Mat from order #191161 was a great gift idea, my mom loved it!",
+          sentiment: "positive", urgency: "low", category: "praise", confidence: 0.95, resolved: true,
+          summary: "Customer is happy that the Standing Desk Mat from order #191161 was a great gift for their mom.",
+          reviewReason: null,
+          draft: "Hi Liam, thank you so much for sharing this — it made our day! We're so glad the Standing Desk Mat from order #191161 was such a hit as a gift for your mom. We'll be sure to pass along your kind words to the team. Thanks for being a customer! - The Support Team" },
+        { id: "T-1002", customer: "Maria Smith", channel: "email", order: "343962", product: "Weighted Blanket",
+          text: "It's been 18 days and my order #343962 still shows 'label created'. I needed the Weighted Blanket for a trip this weekend. What is going on?",
+          sentiment: "negative", urgency: "high", category: "shipping", confidence: 0.85, resolved: true,
+          summary: "Customer's order #343962 has been stuck at “label created” for 18 days and they need the Weighted Blanket for a trip this weekend.",
+          reviewReason: null,
+          draft: "Hi Maria, I'm so sorry to hear that order #343962 for your Weighted Blanket has been stuck at “label created” for 18 days -- that's not the experience we want for you, especially with your trip coming up this weekend. We're looking into this with our carrier right away to find out what's causing the delay, and if we can't get you a real tracking update within 24 hours, we'll send a free replacement via expedited shipping or issue a full refund, whichever you prefer. We'll follow up with an update very soon. Thank you for your patience. The Support Team" },
+        { id: "T-1003", customer: "Elena Nguyen", channel: "instagram_dm", order: "539898", product: "Standing Desk Mat",
+          text: "Does the Standing Desk Mat come in other colors? Thinking about ordering another one after order #539898.",
+          sentiment: "positive", urgency: "low", category: "question", confidence: 0.6, resolved: false,
+          summary: "Customer is asking whether the Standing Desk Mat is available in other colors before placing another order.",
+          reviewReason: "Requires current product catalog/color availability information the agent doesn't have confirmed data on, so a factual reply can't be confidently drafted.",
+          draft: null },
+        { id: "T-1004", customer: "Grace Santos", channel: "instagram_dm", order: "895667", product: null,
+          text: "Can I change the shipping address for order #895667? It hasn't shipped yet I think.",
+          sentiment: "neutral", urgency: "medium", category: "account", confidence: 0.85, resolved: false,
+          summary: "Customer wants to change the shipping address for order #895667 before it ships.",
+          reviewReason: "Request involves changing account/shipping address details on an order, which requires human verification before action.",
+          draft: null },
+        { id: "T-1005", customer: "Grace Khan", channel: "email", order: "900581", product: "Weighted Blanket",
+          text: "Requesting a refund for order #900581, the Weighted Blanket doesn't fit as expected. What's your return policy?",
+          sentiment: "neutral", urgency: "low", category: "refund", confidence: 0.7, resolved: false,
+          summary: "Customer wants to return/refund the Weighted Blanket from order #900581 because it doesn't fit as expected and is asking about the return policy.",
+          reviewReason: "Return policy specifics (timeframe, condition requirements, fees) aren't provided in our reference materials, so an agent needs to confirm exact policy before promising a refund.",
+          draft: null },
+        { id: "T-1006", customer: "Chloe Smith", channel: "gorgias", order: "988662", product: "Wireless Earbuds Pro",
+          text: "Tracking for order #988662 hasn't updated in 13 days. Can someone check on the Wireless Earbuds Pro?",
+          sentiment: "negative", urgency: "medium", category: "shipping", confidence: 0.8, resolved: true,
+          summary: "Customer's tracking for order #988662 (Wireless Earbuds Pro) has not updated in 13 days and they want a status check.",
+          reviewReason: null,
+          draft: "Hi Chloe,\n\nSorry for the worry this has caused! We know a stalled tracking update is frustrating, especially after 13 days with no movement. We're looking into the shipment for your Wireless Earbuds Pro (order #988662) right now and will follow up within 24 hours with an updated tracking status. If it turns out the package is lost in transit, we'll send a replacement right away at no cost to you.\n\nThanks for your patience!\n\nThe Support Team" },
+        { id: "T-1007", customer: "James Nguyen", channel: "instagram_dm", order: "662275", product: "Insulated Water Bottle",
+          text: "Order #662275: the Insulated Water Bottle caught a weird smell out of the box and part of it is discolored. Is this even safe to use?",
+          sentiment: "negative", urgency: "high", category: "defect", confidence: 0.75, resolved: false,
+          summary: "Customer reports their Insulated Water Bottle (order #662275) arrived with an unusual smell and discoloration and is asking if it's safe to use.",
+          reviewReason: "Customer raises a safety concern about the product (odd smell and discoloration, questioning safety), requiring human assessment before responding.",
+          draft: null },
+        { id: "T-1008", customer: "Diego Brown", channel: "shopify_review", order: "479201", product: "Cast Iron Skillet",
+          text: "Tracking for order #479201 hasn't updated in 20 days. Can someone check on the Cast Iron Skillet?",
+          sentiment: "negative", urgency: "medium", category: "shipping", confidence: 0.85, resolved: true,
+          summary: "Customer's tracking for order #479201 (Cast Iron Skillet) hasn't updated in 20 days and they want a status check.",
+          reviewReason: null,
+          draft: "Hi Diego, thanks for reaching out and sorry for the worry this has caused. We'll look into the tracking for order #479201 (Cast Iron Skillet) right away, since 20 days without an update isn't normal. If it turns out the package is lost in transit, we'll send a replacement or issue a refund, whichever you prefer. We'll follow up with an update within 24 hours. Thanks for your patience! - The Support Team" },
+        { id: "T-1009", customer: "Aisha Reyes", channel: "email", order: "910620", product: "Weighted Blanket",
+          text: "The Weighted Blanket from order #910620 was a great gift idea, my mom loved it!",
+          sentiment: "positive", urgency: "low", category: "praise", confidence: 0.97, resolved: true,
+          summary: "Customer shared positive feedback that the Weighted Blanket from order #910620 was a hit as a gift.",
+          reviewReason: null,
+          draft: "Hi Aisha,\n\nThank you so much for sharing this—it made our day! We're so glad the Weighted Blanket from order #910620 was such a hit as a gift for your mom.\n\nWe'll pass along your kind words to the team. Thanks for choosing us!\n\nWarmly,\nThe Support Team" },
+        { id: "T-1010", customer: "Mateo Brown", channel: "instagram_dm", order: "498591", product: "Trail Runner Sneakers",
+          text: "Just checking the ETA on order #498591, the Trail Runner Sneakers page said 5-7 days.",
+          sentiment: "neutral", urgency: "low", category: "shipping", confidence: 0.75, resolved: true,
+          summary: "Customer is asking for the delivery ETA on their Trail Runner Sneakers order.",
+          reviewReason: null,
+          draft: "Hi Mateo! Thanks for checking in. Order #498591 for your Trail Runner Sneakers is on track within the 5-7 day window. You'll receive a tracking update via email as soon as it ships (or if it's already shipped, check your inbox for the tracking link). Let us know if you need anything else! - The Support Team" },
+        { id: "T-1011", customer: "Ethan Khan", channel: "gorgias", order: "472528", product: null,
+          text: "I can't log into my account to check order #472528. Password reset email never arrives.",
+          sentiment: "negative", urgency: "medium", category: "account", confidence: 0.75, resolved: false,
+          summary: "Customer cannot log into their account to check order #472528 because the password reset email never arrives.",
+          reviewReason: "Ticket involves account access/login issue, which requires verification of account details before resolving.",
+          draft: null },
+        { id: "T-1012", customer: "Aisha Rossi", channel: "shopify_review", order: "660086", product: "Ceramic Pour-Over Kettle",
+          text: "The Ceramic Pour-Over Kettle from order #660086 was a great gift idea, my mom loved it!",
+          sentiment: "positive", urgency: "low", category: "praise", confidence: 0.95, resolved: true,
+          summary: "Customer is happy that the Ceramic Pour-Over Kettle from order #660086 was a great gift.",
+          reviewReason: null,
+          draft: "Hi Aisha, thank you so much for the kind words! We're thrilled to hear your mom loved the Ceramic Pour-Over Kettle from order #660086 - that makes our day. Thanks for choosing us for such a special gift! - The Support Team" },
+        { id: "T-1013", customer: "Chloe Novak", channel: "email", order: "330283", product: "Standing Desk Mat",
+          text: "Five stars for the Standing Desk Mat. Ordered a second one already. Great customer service on order #330283.",
+          sentiment: "positive", urgency: "low", category: "praise", confidence: 0.97, resolved: true,
+          summary: "Customer is happy with the Standing Desk Mat and service on order #330283, and has ordered a second one.",
+          reviewReason: null,
+          draft: "Hi Chloe, thank you so much for the kind words! We're thrilled you're loving the Standing Desk Mat and that your experience with order #330283 was a great one. Enjoy your second one when it arrives! - The Support Team" },
+        { id: "T-1014", customer: "James Santos", channel: "email", order: "520651", product: "Wireless Earbuds Pro",
+          text: "My Wireless Earbuds Pro from order #520651 stopped working after 10 days of light use. Really disappointed.",
+          sentiment: "negative", urgency: "medium", category: "defect", confidence: 0.85, resolved: true,
+          summary: "Customer's Wireless Earbuds Pro (order #520651) stopped working after only 10 days of light use.",
+          reviewReason: null,
+          draft: "Hi James,\n\nI'm sorry to hear your Wireless Earbuds Pro from order #520651 stopped working after such light use - that's definitely not the experience we want you to have. We'd like to send you a replacement right away at no cost, or issue a full refund if you'd prefer. Just reply and let us know which you'd like, and we'll get it sorted immediately.\n\nThe Support Team" },
+        { id: "T-1015", customer: "Priya Garcia", channel: "shopify_review", order: "514850", product: "Insulated Water Bottle",
+          text: "My Insulated Water Bottle from order #514850 stopped working after 16 days of light use. Really disappointed.",
+          sentiment: "negative", urgency: "medium", category: "defect", confidence: 0.85, resolved: true,
+          summary: "Customer's Insulated Water Bottle from order #514850 stopped working after only 16 days of light use.",
+          reviewReason: null,
+          draft: "Hi Priya, I'm sorry to hear your Insulated Water Bottle from order #514850 stopped working after such light use - that's not the experience we want you to have. We'd like to send you a replacement right away at no cost to you; please reply confirming your shipping address is still the same, and we'll get it out to you. Thanks for your patience! - The Support Team" },
+        { id: "T-1016", customer: "Sofia Garcia", channel: "instagram_dm", order: "665158", product: "Standing Desk Mat",
+          text: "I want to cancel order #665158 and get a full refund. The Standing Desk Mat is not what was advertised.",
+          sentiment: "negative", urgency: "medium", category: "refund", confidence: 0.75, resolved: true,
+          summary: "Customer wants to cancel order #665158 and receive a full refund because the Standing Desk Mat did not match its advertised description.",
+          reviewReason: null,
+          draft: "Hi Sofia, thanks for reaching out, and I'm sorry the Standing Desk Mat didn't match what was advertised. We've cancelled order #665158 and processed a full refund to your original payment method — you should see it reflected within 5-7 business days. If you have any trouble seeing it, just let us know! - The Support Team" },
+        { id: "T-1017", customer: "Chloe Cruz", channel: "instagram_dm", order: "245051", product: null,
+          text: "This is the THIRD time I'm emailing about order #245051. If this isn't resolved by Friday I'm disputing the charge with my bank and posting about it.",
+          sentiment: "negative", urgency: "high", category: "other", confidence: 0.6, resolved: false,
+          summary: "Customer says this is the third time contacting about order #245051 and threatens a bank dispute and public posting if not resolved by Friday.",
+          reviewReason: "Repeat/escalated complaint (third time emailing) combined with chargeback threat and threat to post publicly.",
+          draft: null },
+        { id: "T-1018", customer: "James Brown", channel: "instagram_dm", order: "260265", product: "Trail Runner Sneakers",
+          text: "Tracking for order #260265 hasn't updated in 7 days. Can someone check on the Trail Runner Sneakers?",
+          sentiment: "neutral", urgency: "medium", category: "shipping", confidence: 0.85, resolved: true,
+          summary: "Customer reports tracking for order #260265 (Trail Runner Sneakers) has not updated in 7 days and wants a status check.",
+          reviewReason: null,
+          draft: "Hi James, thanks for flagging this and sorry for the worry! We'll look into the tracking for your Trail Runner Sneakers (order #260265) right away and follow up with a carrier update within 24 hours. If it turns out the package is stuck, we'll get a replacement or refund moving for you right away. Thanks for your patience! - The Support Team" },
+        { id: "T-1019", customer: "Aisha Kim", channel: "gorgias", order: "724834", product: null,
+          text: "Can I change the shipping address for order #724834? It hasn't shipped yet I think.",
+          sentiment: "neutral", urgency: "medium", category: "account", confidence: 0.8, resolved: false,
+          summary: "Customer wants to change the shipping address on order #724834 before it ships.",
+          reviewReason: "Request involves changing account/shipping address details, which requires human verification before making changes.",
+          draft: null },
+      ],
+    },
+    gorgias: {
+      label: "Live Gorgias Run",
+      sub: "6 real tickets · Shopify dev store",
+      live: true,
+      tickets: [
+        { id: "GOR-74592034", customer: "Francesca Mejos", channel: "email", order: "1001", product: null,
+          text: "Just wanted to say thank you -- my order #1001 arrived and it's perfect! Great quality, fast shipping. Will definitely order again.",
+          sentiment: "positive", urgency: "low", category: "praise", confidence: 0.95, resolved: true,
+          summary: "Customer is happy with order #1001, praising quality and fast shipping.",
+          reviewReason: null,
+          draft: "Hi Francesca, thank you so much for the kind words! We're thrilled to hear order #1001 arrived quickly and met your expectations. We'll be here whenever you're ready to order again! Warmly, The Support Team" },
+        { id: "GOR-74592117", customer: "Francesca Mejos", channel: "email", order: "1004", product: "The Complete Snowboard",
+          text: "Hi, does The Complete Snowboard come in different sizes? Thinking about ordering one after seeing order #1004.",
+          sentiment: "neutral", urgency: "low", category: "question", confidence: 0.6, resolved: false,
+          summary: "Customer is asking whether The Complete Snowboard is available in different sizes before placing an order.",
+          reviewReason: "Agent needs to confirm current size/variant availability for The Complete Snowboard before replying, as this product detail isn't confirmed in available info.",
+          draft: null },
+        { id: "GOR-74592144", customer: "Francesca Mejos", channel: "email", order: "1003", product: null,
+          text: "This is the third time I'm emailing about order #1003. If this isn't resolved by Friday I'm disputing the charge with my bank and posting about this everywhere.",
+          sentiment: "negative", urgency: "high", category: "other", confidence: 0.5, resolved: false,
+          summary: "Customer is escalating an unresolved issue with order #1003 for the third time, threatening a chargeback and public complaints if not resolved by Friday.",
+          reviewReason: "Repeat/escalated complaint (third time emailing) with chargeback threat and threat to post publicly; underlying issue details unknown.",
+          draft: null },
+        { id: "GOR-74592068", customer: "Francesca Mejos", channel: "email", order: null, product: null,
+          text: "I can't log into my account to check on my order. The password reset email never arrives. Can you help?",
+          sentiment: "neutral", urgency: "medium", category: "account", confidence: 0.75, resolved: false,
+          summary: "Customer cannot log into their account because the password reset email is not arriving.",
+          reviewReason: "Ticket involves account access/credentials, which requires human verification before any account changes are made.",
+          draft: null },
+        { id: "GOR-74590749", customer: "Jerome Katigbak", channel: "email", order: "1001", product: null,
+          text: "Hi, I received order #1001 today and the item arrived damaged -- there's a crack in it and it doesn't work properly. Really disappointed. Can I get a replacement or refund?",
+          sentiment: "negative", urgency: "medium", category: "defect", confidence: 0.75, resolved: true,
+          summary: "Customer received order #1001 damaged (cracked and not working) and is requesting a replacement or refund.",
+          reviewReason: null,
+          draft: "Hi Jerome, I'm so sorry to hear your order #1001 arrived cracked and not working properly — that's not the experience we want you to have. We'd be happy to send you a replacement right away, or issue a full refund if you'd prefer. Just let us know which option works best for you, and we'll get it taken care of immediately. Thanks for your patience! The Support Team" },
+        { id: "GOR-74578472", customer: "Gorgias (system)", channel: "email", order: null, product: null,
+          text: "(Gorgias's own auto-generated onboarding/welcome message, created when the workspace was set up -- not a real customer inquiry.)",
+          sentiment: "neutral", urgency: "low", category: "system", confidence: 0.95, resolved: false,
+          summary: "This is an automated onboarding/welcome message from Gorgias, not an actual customer support ticket.",
+          reviewReason: "This is a system-generated onboarding message from the Gorgias platform itself, not a real customer inquiry; a human should confirm it can be dismissed/archived rather than triaged as a support case.",
+          draft: null, systemNote: true },
+      ],
+    },
+  };
 
+  let activeDataset = "synthetic";
   let activeFilter = "all";
-  let selectedId = "T-1002";
+  let selectedId = null;
+
+  function currentTickets() {
+    return DATASETS[activeDataset].tickets;
+  }
 
   function filteredTickets() {
-    if (activeFilter === "resolved") return tickets.filter((t) => t.resolved);
-    if (activeFilter === "flagged") return tickets.filter((t) => !t.resolved);
-    return tickets;
+    const all = currentTickets();
+    if (activeFilter === "resolved") return all.filter((t) => t.resolved);
+    if (activeFilter === "flagged") return all.filter((t) => !t.resolved);
+    return all;
+  }
+
+  function renderDatasetBar() {
+    const el = document.getElementById("datasetBar");
+    el.innerHTML = Object.entries(DATASETS).map(([key, d]) => `
+      <button class="dataset-tab ${key === activeDataset ? "active" : ""}" data-dataset="${key}">
+        <div>
+          <div class="dt-name">${d.label}</div>
+          <div class="dt-sub">${d.sub}</div>
+        </div>
+        ${d.live ? '<span class="live-dot">Live</span>' : ""}
+      </button>
+    `).join("");
+
+    el.querySelectorAll(".dataset-tab").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        activeDataset = btn.dataset.dataset;
+        activeFilter = "all";
+        selectedId = currentTickets()[0]?.id ?? null;
+        renderAll();
+      });
+    });
+  }
+
+  function renderStats() {
+    const all = currentTickets();
+    const resolved = all.filter((t) => t.resolved).length;
+    const flagged = all.length - resolved;
+    document.getElementById("stats").innerHTML = `
+      <div class="stat"><div class="n">${all.length}/${all.length}</div><div class="l">Processed</div></div>
+      <div class="stat"><div class="n good">${resolved}</div><div class="l">Auto-drafted</div></div>
+      <div class="stat"><div class="n warn">${flagged}</div><div class="l">Flagged</div></div>
+      <div class="stat"><div class="n">0</div><div class="l">Failed</div></div>
+    `;
+  }
+
+  function renderChips() {
+    const all = currentTickets();
+    const resolved = all.filter((t) => t.resolved).length;
+    const flagged = all.length - resolved;
+    const el = document.getElementById("statusChips");
+    el.innerHTML = `
+      <button class="chip ${activeFilter === "all" ? "active" : ""}" data-filter="all">All · ${all.length}</button>
+      <button class="chip ${activeFilter === "resolved" ? "active" : ""}" data-filter="resolved">Auto-drafted · ${resolved}</button>
+      <button class="chip ${activeFilter === "flagged" ? "active" : ""}" data-filter="flagged">Flagged · ${flagged}</button>
+    `;
+    el.querySelectorAll(".chip").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        activeFilter = btn.dataset.filter;
+        renderChips();
+        renderList();
+      });
+    });
   }
 
   function renderCategoryBars() {
+    const all = currentTickets();
     const counts = {};
-    tickets.forEach((t) => { counts[t.category] = (counts[t.category] || 0) + 1; });
+    all.forEach((t) => { counts[t.category] = (counts[t.category] || 0) + 1; });
     const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
     const max = entries[0][1];
     const el = document.getElementById("catBars");
     el.innerHTML = entries.map(([cat, n]) => `
       <div class="catrow">
-        <span class="k">${CATEGORY_LABEL[cat]}</span>
+        <span class="k">${CATEGORY_LABEL[cat] || cat}</span>
         <span class="bar"><span style="width:${(n / max) * 100}%"></span></span>
         <span class="v">${n}</span>
       </div>
@@ -727,9 +910,9 @@
             <div class="row-customer">${t.customer}</div>
             <div class="row-text">${t.text}</div>
             <div class="row-meta">
-              <span>${CATEGORY_LABEL[t.category]}</span>
+              <span>${CATEGORY_LABEL[t.category] || t.category}</span>
               <span>·</span>
-              <span>${CHANNEL_LABEL[t.channel]}</span>
+              <span>${CHANNEL_LABEL[t.channel] || t.channel}</span>
             </div>
           </button>
         </li>
@@ -746,7 +929,7 @@
   }
 
   function renderDetail() {
-    const t = tickets.find((x) => x.id === selectedId);
+    const t = currentTickets().find((x) => x.id === selectedId);
     const el = document.getElementById("detail");
     if (!t) { el.innerHTML = ""; return; }
 
@@ -768,18 +951,18 @@
     el.innerHTML = `
       <div class="detail-head">
         <div>
-          <div class="detail-id">${t.id} &nbsp;·&nbsp; Order #${t.order}${t.product ? " &nbsp;·&nbsp; " + t.product : ""}</div>
+          <div class="detail-id">${t.id}${t.order ? " &nbsp;·&nbsp; Order #" + t.order : ""}${t.product ? " &nbsp;·&nbsp; " + t.product : ""}</div>
           <div class="detail-customer">${t.customer}</div>
         </div>
         <div class="detail-tags">
-          <span class="tag">${CHANNEL_LABEL[t.channel]}</span>
-          <span class="tag">${CATEGORY_LABEL[t.category]}</span>
+          <span class="tag">${CHANNEL_LABEL[t.channel] || t.channel}</span>
+          <span class="tag">${CATEGORY_LABEL[t.category] || t.category}</span>
         </div>
       </div>
 
       <div class="section">
         <p class="eyebrow">Incoming message</p>
-        <div class="incoming">${t.text}</div>
+        <div class="incoming ${t.systemNote ? "system-note" : ""}">${t.text}</div>
       </div>
 
       <div class="section">
@@ -795,7 +978,7 @@
           </div>
           <div class="field">
             <div class="k">Category</div>
-            <div class="v">${CATEGORY_LABEL[t.category]}</div>
+            <div class="v">${CATEGORY_LABEL[t.category] || t.category}</div>
           </div>
           <div class="field">
             <div class="k">Confidence</div>
@@ -812,15 +995,15 @@
     `;
   }
 
-  document.getElementById("statusChips").addEventListener("click", (e) => {
-    const btn = e.target.closest(".chip");
-    if (!btn) return;
-    activeFilter = btn.dataset.filter;
-    document.querySelectorAll("#statusChips .chip").forEach((c) => c.classList.toggle("active", c === btn));
+  function renderAll() {
+    renderDatasetBar();
+    renderStats();
+    renderChips();
+    renderCategoryBars();
     renderList();
-  });
+    renderDetail();
+  }
 
-  renderCategoryBars();
-  renderList();
-  renderDetail();
+  selectedId = currentTickets()[0]?.id ?? null;
+  renderAll();
 </script>

@@ -105,15 +105,41 @@ _Live run against the first 20 tickets of the synthetic dataset
 
 Category breakdown: shipping=5, account=4, praise=4, defect=3, refund=2, other=1, question=1.
 
-**[dashboard.html](dashboard.html)** renders these results as an interactive
-console -- open it in a browser to click through each ticket: the original
-customer message, Claude's classification, and either the drafted reply or
-the human-review reason.
-
 The full 300-row batch behaves the same way, just longer and slightly
 pricier to run -- see [`architecture.md`](architecture.md) for how the
 pipeline handles that volume (bounded concurrency, retries, failure
 isolation).
+
+### Live run against a real Gorgias account
+
+To validate `--source gorgias` end-to-end, not just against mock data, I
+connected a free Shopify Partner development store to a Gorgias trial
+workspace and seeded it with real inbound tickets (some through Gorgias's
+own compose UI, some as genuine inbound emails to the workspace's support
+address) referencing real Shopify order numbers.
+
+| Metric | Value |
+|---|---|
+| Tickets processed | 6/6 |
+| Auto-drafted replies | 2 |
+| Flagged for human review | 4 |
+| Failures after retries | 0 |
+
+Category breakdown: other=2, account=1, defect=1, praise=1, question=1.
+
+Two results worth calling out:
+- The escalation ticket (repeat complaint + chargeback threat) was correctly
+  flagged high-urgency with no draft attempted -- the safety net working
+  against a real, unscripted ticket.
+- Gorgias auto-generates an onboarding/welcome message when a workspace is
+  created. The pipeline correctly recognized it wasn't a real customer
+  inquiry and flagged it for a human to dismiss, rather than hallucinating
+  a customer-service reply to a system message.
+
+**[dashboard.html](dashboard.html)** renders both runs as an interactive
+console with a toggle between the synthetic dataset and this live Gorgias
+run -- click through each ticket to see the original message, Claude's
+classification, and either the drafted reply or the human-review reason.
 
 ## Key Skills Demonstrated
 
