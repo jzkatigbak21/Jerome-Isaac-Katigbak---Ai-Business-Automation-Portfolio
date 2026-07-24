@@ -1,0 +1,301 @@
+ticket_id,customer_name,email,channel,text,_expected_category,_expected_urgency,_expected_sentiment
+T-1000,Liam Reyes,liam.reyes@example.com,shopify_review,I can't log into my account to check order #356787. Password reset email never arrives.,account,medium,neutral
+T-1001,Liam Okafor,liam.okafor@example.com,instagram_dm,"The Standing Desk Mat from order #191161 was a great gift idea, my mom loved it!",praise,medium,positive
+T-1002,Maria Smith,maria.smith@example.com,email,It's been 18 days and my order #343962 still shows 'label created'. I needed the Weighted Blanket for a trip this weekend. What is going on?,shipping,high,negative
+T-1003,Elena Nguyen,elena.nguyen@example.com,instagram_dm,Does the Standing Desk Mat come in other colors? Thinking about ordering another one after order #539898.,question,low,neutral
+T-1004,Grace Santos,grace.santos@example.com,instagram_dm,Can I change the shipping address for order #895667? It hasn't shipped yet I think.,question,medium,neutral
+T-1005,Grace Khan,grace.khan@example.com,email,"Requesting a refund for order #900581, the Weighted Blanket doesn't fit as expected. What's your return policy?",refund,medium,neutral
+T-1006,Chloe Smith,chloe.smith@example.com,gorgias,Tracking for order #988662 hasn't updated in 13 days. Can someone check on the Wireless Earbuds Pro?,shipping,medium,negative
+T-1007,James Nguyen,james.nguyen@example.com,instagram_dm,Order #662275: the Insulated Water Bottle caught a weird smell out of the box and part of it is discolored. Is this even safe to use?,defect,high,negative
+T-1008,Diego Brown,diego.brown@example.com,shopify_review,Tracking for order #479201 hasn't updated in 20 days. Can someone check on the Cast Iron Skillet?,shipping,medium,negative
+T-1009,Aisha Reyes,aisha.reyes@example.com,email,"The Weighted Blanket from order #910620 was a great gift idea, my mom loved it!",praise,medium,positive
+T-1010,Mateo Brown,mateo.brown@example.com,instagram_dm,"Just checking the ETA on order #498591, the Trail Runner Sneakers page said 5-7 days.",shipping,low,neutral
+T-1011,Ethan Khan,ethan.khan@example.com,gorgias,I can't log into my account to check order #472528. Password reset email never arrives.,account,medium,neutral
+T-1012,Aisha Rossi,aisha.rossi@example.com,shopify_review,"The Ceramic Pour-Over Kettle from order #660086 was a great gift idea, my mom loved it!",praise,medium,positive
+T-1013,Chloe Novak,chloe.novak@example.com,email,Five stars for the Standing Desk Mat. Ordered a second one already. Great customer service on order #330283.,praise,low,positive
+T-1014,James Santos,james.santos@example.com,email,My Wireless Earbuds Pro from order #520651 stopped working after 10 days of light use. Really disappointed.,defect,medium,negative
+T-1015,Priya Garcia,priya.garcia@example.com,shopify_review,My Insulated Water Bottle from order #514850 stopped working after 16 days of light use. Really disappointed.,defect,medium,negative
+T-1016,Sofia Garcia,sofia.garcia@example.com,instagram_dm,I want to cancel order #665158 and get a full refund. The Standing Desk Mat is not what was advertised.,refund,high,negative
+T-1017,Chloe Cruz,chloe.cruz@example.com,instagram_dm,This is the THIRD time I'm emailing about order #245051. If this isn't resolved by Friday I'm disputing the charge with my bank and posting about it.,ambiguous,high,negative
+T-1018,James Brown,james.brown@example.com,instagram_dm,Tracking for order #260265 hasn't updated in 7 days. Can someone check on the Trail Runner Sneakers?,shipping,medium,negative
+T-1019,Aisha Kim,aisha.kim@example.com,gorgias,Can I change the shipping address for order #724834? It hasn't shipped yet I think.,question,medium,neutral
+T-1020,Maria Okafor,maria.okafor@example.com,gorgias,Does the Trail Runner Sneakers come in other colors? Thinking about ordering another one after order #814825.,question,low,neutral
+T-1021,Priya Smith,priya.smith@example.com,instagram_dm,Order #555884: the Bamboo Cutting Board Set caught a weird smell out of the box and part of it is discolored. Is this even safe to use?,defect,high,negative
+T-1022,Grace Dela Cruz,grace.dela.cruz@example.com,gorgias,It's been 5 days and my order #632342 still shows 'label created'. I needed the Ceramic Pour-Over Kettle for a trip this weekend. What is going on?,shipping,high,negative
+T-1023,Elena Khan,elena.khan@example.com,email,"Just checking the ETA on order #899550, the Wireless Earbuds Pro page said 5-7 days.",shipping,low,neutral
+T-1024,Priya Patel,priya.patel@example.com,gorgias,Can I change the shipping address for order #217301? It hasn't shipped yet I think.,question,medium,neutral
+T-1025,James Garcia,james.garcia@example.com,instagram_dm,My Cast Iron Skillet from order #182582 stopped working after 4 days of light use. Really disappointed.,defect,medium,negative
+T-1026,Aisha Santos,aisha.santos@example.com,shopify_review,"Just checking the ETA on order #903035, the Standing Desk Mat page said 5-7 days.",shipping,low,neutral
+T-1027,Lucas Dela Cruz,lucas.dela.cruz@example.com,instagram_dm,I can't log into my account to check order #377932. Password reset email never arrives.,account,medium,neutral
+T-1028,Elena Nguyen,elena.nguyen@example.com,instagram_dm,My Bamboo Cutting Board Set from order #518373 stopped working after 13 days of light use. Really disappointed.,defect,medium,negative
+T-1029,Amara Smith,amara.smith@example.com,gorgias,This is the THIRD time I'm emailing about order #335612. If this isn't resolved by Friday I'm disputing the charge with my bank and posting about it.,ambiguous,high,negative
+T-1030,Mateo Rossi,mateo.rossi@example.com,email,It's been 4 days and my order #107540 still shows 'label created'. I needed the Weighted Blanket for a trip this weekend. What is going on?,shipping,high,negative
+T-1031,Aisha Lopez,aisha.lopez@example.com,shopify_review,My Everyday Tote from order #446479 stopped working after 4 days of light use. Really disappointed.,defect,medium,negative
+T-1032,Lucas Garcia,lucas.garcia@example.com,instagram_dm,I want to cancel order #238739 and get a full refund. The Standing Desk Mat is not what was advertised.,refund,high,negative
+T-1033,Lucas Santos,lucas.santos@example.com,email,My Linen Bedsheet Set from order #299659 stopped working after 5 days of light use. Really disappointed.,defect,medium,negative
+T-1034,Kenji Cruz,kenji.cruz@example.com,email,I can't log into my account to check order #531071. Password reset email never arrives.,account,medium,neutral
+T-1035,Liam Reyes,liam.reyes@example.com,email,I can't log into my account to check order #863587. Password reset email never arrives.,account,medium,neutral
+T-1036,Elena Garcia,elena.garcia@example.com,instagram_dm,My Standing Desk Mat from order #570405 stopped working after 6 days of light use. Really disappointed.,defect,medium,negative
+T-1037,Grace Patel,grace.patel@example.com,email,The Weighted Blanket I received (order #179046) arrived broken/cracked. This is unacceptable for the price. I want a replacement or refund.,defect,high,negative
+T-1038,Maria Smith,maria.smith@example.com,instagram_dm,It's been 15 days and my order #274389 still shows 'label created'. I needed the Weighted Blanket for a trip this weekend. What is going on?,shipping,high,negative
+T-1039,Elena Brown,elena.brown@example.com,instagram_dm,Five stars for the Linen Bedsheet Set. Ordered a second one already. Great customer service on order #161483.,praise,low,positive
+T-1040,Chloe Novak,chloe.novak@example.com,instagram_dm,It's been 15 days and my order #399105 still shows 'label created'. I needed the Insulated Water Bottle for a trip this weekend. What is going on?,shipping,high,negative
+T-1041,Elena Novak,elena.novak@example.com,email,The Weighted Blanket I received (order #161324) arrived broken/cracked. This is unacceptable for the price. I want a replacement or refund.,defect,high,negative
+T-1042,Priya Reyes,priya.reyes@example.com,shopify_review,"The Everyday Tote from order #712554 was a great gift idea, my mom loved it!",praise,medium,positive
+T-1043,Aisha Brown,aisha.brown@example.com,email,It's been 21 days and my order #171849 still shows 'label created'. I needed the Ceramic Pour-Over Kettle for a trip this weekend. What is going on?,shipping,high,negative
+T-1044,Mateo Kim,mateo.kim@example.com,email,I can't log into my account to check order #697347. Password reset email never arrives.,account,medium,neutral
+T-1045,Aisha Kim,aisha.kim@example.com,gorgias,Can I change the shipping address for order #692683? It hasn't shipped yet I think.,question,medium,neutral
+T-1046,Grace Garcia,grace.garcia@example.com,instagram_dm,This is the THIRD time I'm emailing about order #350280. If this isn't resolved by Friday I'm disputing the charge with my bank and posting about it.,ambiguous,high,negative
+T-1047,Diego Patel,diego.patel@example.com,email,The Wireless Earbuds Pro I received (order #888387) arrived broken/cracked. This is unacceptable for the price. I want a replacement or refund.,defect,high,negative
+T-1048,Liam Smith,liam.smith@example.com,gorgias,Five stars for the Standing Desk Mat. Ordered a second one already. Great customer service on order #323508.,praise,low,positive
+T-1049,Ethan Lopez,ethan.lopez@example.com,gorgias,The Trail Runner Sneakers I received (order #356150) arrived broken/cracked. This is unacceptable for the price. I want a replacement or refund.,defect,high,negative
+T-1050,Amara Brown,amara.brown@example.com,email,The Standing Desk Mat I received (order #837715) arrived broken/cracked. This is unacceptable for the price. I want a replacement or refund.,defect,high,negative
+T-1051,Diego Lopez,diego.lopez@example.com,email,I can't log into my account to check order #240814. Password reset email never arrives.,account,medium,neutral
+T-1052,Liam Nguyen,liam.nguyen@example.com,gorgias,This is the THIRD time I'm emailing about order #262998. If this isn't resolved by Friday I'm disputing the charge with my bank and posting about it.,ambiguous,high,negative
+T-1053,Elena Nguyen,elena.nguyen@example.com,instagram_dm,Can I change the shipping address for order #313487? It hasn't shipped yet I think.,question,medium,neutral
+T-1054,James Smith,james.smith@example.com,email,I want to cancel order #969634 and get a full refund. The Linen Bedsheet Set is not what was advertised.,refund,high,negative
+T-1055,Priya Santos,priya.santos@example.com,shopify_review,It's been 10 days and my order #768061 still shows 'label created'. I needed the Ceramic Pour-Over Kettle for a trip this weekend. What is going on?,shipping,high,negative
+T-1056,Amara Dela Cruz,amara.dela.cruz@example.com,email,"The Linen Bedsheet Set from order #688153 was a great gift idea, my mom loved it!",praise,medium,positive
+T-1057,Sofia Dela Cruz,sofia.dela.cruz@example.com,shopify_review,Tracking for order #975136 hasn't updated in 13 days. Can someone check on the Everyday Tote?,shipping,medium,negative
+T-1058,Sofia Reyes,sofia.reyes@example.com,gorgias,Just wanted to say the Bamboo Cutting Board Set I got (order #482364) exceeded expectations! Fast shipping too.,praise,low,positive
+T-1059,Mateo Okafor,mateo.okafor@example.com,instagram_dm,My Trail Runner Sneakers from order #470858 stopped working after 19 days of light use. Really disappointed.,defect,medium,negative
+T-1060,Sofia Lopez,sofia.lopez@example.com,instagram_dm,Can I change the shipping address for order #270395? It hasn't shipped yet I think.,question,medium,neutral
+T-1061,Noah Nguyen,noah.nguyen@example.com,shopify_review,It's been 15 days and my order #920391 still shows 'label created'. I needed the Wireless Earbuds Pro for a trip this weekend. What is going on?,shipping,high,negative
+T-1062,Noah Santos,noah.santos@example.com,instagram_dm,I want to cancel order #501124 and get a full refund. The Trail Runner Sneakers is not what was advertised.,refund,high,negative
+T-1063,Elena Brown,elena.brown@example.com,shopify_review,My Insulated Water Bottle from order #466643 stopped working after 11 days of light use. Really disappointed.,defect,medium,negative
+T-1064,Maria Okafor,maria.okafor@example.com,gorgias,My Weighted Blanket from order #517821 stopped working after 12 days of light use. Really disappointed.,defect,medium,negative
+T-1065,Aisha Santos,aisha.santos@example.com,instagram_dm,"Just checking the ETA on order #468203, the Bamboo Cutting Board Set page said 5-7 days.",shipping,low,neutral
+T-1066,Priya Reyes,priya.reyes@example.com,gorgias,I can't log into my account to check order #373903. Password reset email never arrives.,account,medium,neutral
+T-1067,Liam Rossi,liam.rossi@example.com,instagram_dm,It's been 12 days and my order #462479 still shows 'label created'. I needed the Linen Bedsheet Set for a trip this weekend. What is going on?,shipping,high,negative
+T-1068,Liam Kim,liam.kim@example.com,email,Can I change the shipping address for order #299312? It hasn't shipped yet I think.,question,medium,neutral
+T-1069,Kenji Reyes,kenji.reyes@example.com,shopify_review,"The Standing Desk Mat from order #945687 was a great gift idea, my mom loved it!",praise,medium,positive
+T-1070,Kenji Smith,kenji.smith@example.com,email,"Requesting a refund for order #753425, the Wireless Earbuds Pro doesn't fit as expected. What's your return policy?",refund,medium,neutral
+T-1071,Diego Dela Cruz,diego.dela.cruz@example.com,gorgias,"The Bamboo Cutting Board Set from order #799287 was a great gift idea, my mom loved it!",praise,medium,positive
+T-1072,Diego Dela Cruz,diego.dela.cruz@example.com,instagram_dm,Just wanted to say the Ceramic Pour-Over Kettle I got (order #301158) exceeded expectations! Fast shipping too.,praise,low,positive
+T-1073,Noah Rossi,noah.rossi@example.com,email,I can't log into my account to check order #415568. Password reset email never arrives.,account,medium,neutral
+T-1074,Diego Garcia,diego.garcia@example.com,gorgias,I want to cancel order #923927 and get a full refund. The Linen Bedsheet Set is not what was advertised.,refund,high,negative
+T-1075,Amara Patel,amara.patel@example.com,shopify_review,Five stars for the Weighted Blanket. Ordered a second one already. Great customer service on order #636004.,praise,low,positive
+T-1076,Aisha Novak,aisha.novak@example.com,gorgias,I can't log into my account to check order #796101. Password reset email never arrives.,account,medium,neutral
+T-1077,Mateo Okafor,mateo.okafor@example.com,shopify_review,Tracking for order #335552 hasn't updated in 8 days. Can someone check on the Bamboo Cutting Board Set?,shipping,medium,negative
+T-1078,James Garcia,james.garcia@example.com,instagram_dm,It's been 4 days and my order #740967 still shows 'label created'. I needed the Insulated Water Bottle for a trip this weekend. What is going on?,shipping,high,negative
+T-1079,Elena Nguyen,elena.nguyen@example.com,shopify_review,Just wanted to say the Linen Bedsheet Set I got (order #618392) exceeded expectations! Fast shipping too.,praise,low,positive
+T-1080,Maria Lopez,maria.lopez@example.com,shopify_review,The Trail Runner Sneakers I received (order #916232) arrived broken/cracked. This is unacceptable for the price. I want a replacement or refund.,defect,high,negative
+T-1081,Amara Reyes,amara.reyes@example.com,instagram_dm,The Standing Desk Mat I received (order #361303) arrived broken/cracked. This is unacceptable for the price. I want a replacement or refund.,defect,high,negative
+T-1082,Amara Okafor,amara.okafor@example.com,gorgias,The Standing Desk Mat I received (order #686075) arrived broken/cracked. This is unacceptable for the price. I want a replacement or refund.,defect,high,negative
+T-1083,Amara Rossi,amara.rossi@example.com,instagram_dm,Order #547470: the Standing Desk Mat caught a weird smell out of the box and part of it is discolored. Is this even safe to use?,defect,high,negative
+T-1084,Noah Nguyen,noah.nguyen@example.com,shopify_review,This is the THIRD time I'm emailing about order #571932. If this isn't resolved by Friday I'm disputing the charge with my bank and posting about it.,ambiguous,high,negative
+T-1085,Grace Santos,grace.santos@example.com,gorgias,"Just checking the ETA on order #608136, the Standing Desk Mat page said 5-7 days.",shipping,low,neutral
+T-1086,Aisha Nguyen,aisha.nguyen@example.com,gorgias,Five stars for the Bamboo Cutting Board Set. Ordered a second one already. Great customer service on order #345884.,praise,low,positive
+T-1087,Aisha Khan,aisha.khan@example.com,shopify_review,"Requesting a refund for order #342495, the Ceramic Pour-Over Kettle doesn't fit as expected. What's your return policy?",refund,medium,neutral
+T-1088,Elena Smith,elena.smith@example.com,instagram_dm,"The Linen Bedsheet Set from order #527398 was a great gift idea, my mom loved it!",praise,medium,positive
+T-1089,James Garcia,james.garcia@example.com,email,Just wanted to say the Linen Bedsheet Set I got (order #508396) exceeded expectations! Fast shipping too.,praise,low,positive
+T-1090,Chloe Patel,chloe.patel@example.com,instagram_dm,"Just checking the ETA on order #468845, the Everyday Tote page said 5-7 days.",shipping,low,neutral
+T-1091,Kenji Dela Cruz,kenji.dela.cruz@example.com,shopify_review,"Just checking the ETA on order #938722, the Standing Desk Mat page said 5-7 days.",shipping,low,neutral
+T-1092,Mateo Novak,mateo.novak@example.com,instagram_dm,Five stars for the Linen Bedsheet Set. Ordered a second one already. Great customer service on order #609232.,praise,low,positive
+T-1093,Chloe Nguyen,chloe.nguyen@example.com,shopify_review,"Requesting a refund for order #981334, the Ceramic Pour-Over Kettle doesn't fit as expected. What's your return policy?",refund,medium,neutral
+T-1094,Maria Lopez,maria.lopez@example.com,email,Can I change the shipping address for order #720644? It hasn't shipped yet I think.,question,medium,neutral
+T-1095,Kenji Khan,kenji.khan@example.com,gorgias,Tracking for order #290556 hasn't updated in 3 days. Can someone check on the Insulated Water Bottle?,shipping,medium,negative
+T-1096,Priya Garcia,priya.garcia@example.com,instagram_dm,Just wanted to say the Insulated Water Bottle I got (order #442722) exceeded expectations! Fast shipping too.,praise,low,positive
+T-1097,Kenji Novak,kenji.novak@example.com,email,I want to cancel order #593152 and get a full refund. The Trail Runner Sneakers is not what was advertised.,refund,high,negative
+T-1098,Mateo Okafor,mateo.okafor@example.com,email,"Requesting a refund for order #919182, the Trail Runner Sneakers doesn't fit as expected. What's your return policy?",refund,medium,neutral
+T-1099,Elena Brown,elena.brown@example.com,shopify_review,My Everyday Tote from order #751517 stopped working after 6 days of light use. Really disappointed.,defect,medium,negative
+T-1100,Lucas Okafor,lucas.okafor@example.com,instagram_dm,The Trail Runner Sneakers I received (order #691364) arrived broken/cracked. This is unacceptable for the price. I want a replacement or refund.,defect,high,negative
+T-1101,Grace Santos,grace.santos@example.com,email,"The Wireless Earbuds Pro from order #275939 was a great gift idea, my mom loved it!",praise,medium,positive
+T-1102,Noah Novak,noah.novak@example.com,gorgias,Order #706794: the Trail Runner Sneakers caught a weird smell out of the box and part of it is discolored. Is this even safe to use?,defect,high,negative
+T-1103,Chloe Kim,chloe.kim@example.com,shopify_review,Can I change the shipping address for order #179688? It hasn't shipped yet I think.,question,medium,neutral
+T-1104,Diego Brown,diego.brown@example.com,email,Tracking for order #944657 hasn't updated in 5 days. Can someone check on the Cast Iron Skillet?,shipping,medium,negative
+T-1105,Kenji Okafor,kenji.okafor@example.com,gorgias,"Requesting a refund for order #172306, the Wireless Earbuds Pro doesn't fit as expected. What's your return policy?",refund,medium,neutral
+T-1106,Kenji Brown,kenji.brown@example.com,gorgias,It's been 15 days and my order #210665 still shows 'label created'. I needed the Insulated Water Bottle for a trip this weekend. What is going on?,shipping,high,negative
+T-1107,Amara Nguyen,amara.nguyen@example.com,gorgias,I can't log into my account to check order #556641. Password reset email never arrives.,account,medium,neutral
+T-1108,Lucas Patel,lucas.patel@example.com,gorgias,Can I change the shipping address for order #965845? It hasn't shipped yet I think.,question,medium,neutral
+T-1109,Mateo Brown,mateo.brown@example.com,shopify_review,"Requesting a refund for order #392477, the Trail Runner Sneakers doesn't fit as expected. What's your return policy?",refund,medium,neutral
+T-1110,Amara Rossi,amara.rossi@example.com,gorgias,Order #800646: the Cast Iron Skillet caught a weird smell out of the box and part of it is discolored. Is this even safe to use?,defect,high,negative
+T-1111,Lucas Brown,lucas.brown@example.com,shopify_review,It's been 17 days and my order #290672 still shows 'label created'. I needed the Wireless Earbuds Pro for a trip this weekend. What is going on?,shipping,high,negative
+T-1112,Grace Cruz,grace.cruz@example.com,email,"Requesting a refund for order #725113, the Bamboo Cutting Board Set doesn't fit as expected. What's your return policy?",refund,medium,neutral
+T-1113,Elena Smith,elena.smith@example.com,instagram_dm,Does the Weighted Blanket come in other colors? Thinking about ordering another one after order #855053.,question,low,neutral
+T-1114,Mateo Nguyen,mateo.nguyen@example.com,instagram_dm,Does the Insulated Water Bottle come in other colors? Thinking about ordering another one after order #777278.,question,low,neutral
+T-1115,Maria Smith,maria.smith@example.com,shopify_review,Order #332360: the Bamboo Cutting Board Set caught a weird smell out of the box and part of it is discolored. Is this even safe to use?,defect,high,negative
+T-1116,Ethan Patel,ethan.patel@example.com,instagram_dm,I want to cancel order #656711 and get a full refund. The Standing Desk Mat is not what was advertised.,refund,high,negative
+T-1117,Priya Cruz,priya.cruz@example.com,gorgias,"The Insulated Water Bottle from order #384076 was a great gift idea, my mom loved it!",praise,medium,positive
+T-1118,Liam Nguyen,liam.nguyen@example.com,shopify_review,My Weighted Blanket from order #430876 stopped working after 5 days of light use. Really disappointed.,defect,medium,negative
+T-1119,Elena Nguyen,elena.nguyen@example.com,gorgias,My Insulated Water Bottle from order #389930 stopped working after 20 days of light use. Really disappointed.,defect,medium,negative
+T-1120,Elena Novak,elena.novak@example.com,gorgias,Tracking for order #478411 hasn't updated in 7 days. Can someone check on the Weighted Blanket?,shipping,medium,negative
+T-1121,Sofia Novak,sofia.novak@example.com,gorgias,It's been 19 days and my order #157174 still shows 'label created'. I needed the Everyday Tote for a trip this weekend. What is going on?,shipping,high,negative
+T-1122,Sofia Okafor,sofia.okafor@example.com,gorgias,"The Insulated Water Bottle from order #207570 was a great gift idea, my mom loved it!",praise,medium,positive
+T-1123,Lucas Patel,lucas.patel@example.com,gorgias,Five stars for the Wireless Earbuds Pro. Ordered a second one already. Great customer service on order #293319.,praise,low,positive
+T-1124,Lucas Smith,lucas.smith@example.com,email,"Just checking the ETA on order #520172, the Trail Runner Sneakers page said 5-7 days.",shipping,low,neutral
+T-1125,James Khan,james.khan@example.com,gorgias,Can I change the shipping address for order #950544? It hasn't shipped yet I think.,question,medium,neutral
+T-1126,Mateo Smith,mateo.smith@example.com,shopify_review,Tracking for order #901577 hasn't updated in 15 days. Can someone check on the Standing Desk Mat?,shipping,medium,negative
+T-1127,Chloe Patel,chloe.patel@example.com,instagram_dm,Order #411797: the Insulated Water Bottle caught a weird smell out of the box and part of it is discolored. Is this even safe to use?,defect,high,negative
+T-1128,James Rossi,james.rossi@example.com,shopify_review,I want to cancel order #899787 and get a full refund. The Trail Runner Sneakers is not what was advertised.,refund,high,negative
+T-1129,Aisha Khan,aisha.khan@example.com,email,I want to cancel order #282256 and get a full refund. The Weighted Blanket is not what was advertised.,refund,high,negative
+T-1130,Maria Kim,maria.kim@example.com,instagram_dm,The Insulated Water Bottle I received (order #822858) arrived broken/cracked. This is unacceptable for the price. I want a replacement or refund.,defect,high,negative
+T-1131,James Garcia,james.garcia@example.com,instagram_dm,I want to cancel order #841296 and get a full refund. The Bamboo Cutting Board Set is not what was advertised.,refund,high,negative
+T-1132,Mateo Lopez,mateo.lopez@example.com,shopify_review,Tracking for order #926097 hasn't updated in 20 days. Can someone check on the Bamboo Cutting Board Set?,shipping,medium,negative
+T-1133,Liam Dela Cruz,liam.dela.cruz@example.com,gorgias,Just wanted to say the Weighted Blanket I got (order #779094) exceeded expectations! Fast shipping too.,praise,low,positive
+T-1134,Sofia Smith,sofia.smith@example.com,gorgias,"Just checking the ETA on order #273982, the Everyday Tote page said 5-7 days.",shipping,low,neutral
+T-1135,Liam Patel,liam.patel@example.com,gorgias,Five stars for the Bamboo Cutting Board Set. Ordered a second one already. Great customer service on order #833723.,praise,low,positive
+T-1136,Lucas Patel,lucas.patel@example.com,instagram_dm,Does the Trail Runner Sneakers come in other colors? Thinking about ordering another one after order #727086.,question,low,neutral
+T-1137,Priya Rossi,priya.rossi@example.com,shopify_review,"The Bamboo Cutting Board Set from order #127121 was a great gift idea, my mom loved it!",praise,medium,positive
+T-1138,Maria Santos,maria.santos@example.com,shopify_review,I can't log into my account to check order #704238. Password reset email never arrives.,account,medium,neutral
+T-1139,Amara Lopez,amara.lopez@example.com,instagram_dm,Five stars for the Bamboo Cutting Board Set. Ordered a second one already. Great customer service on order #290305.,praise,low,positive
+T-1140,Lucas Smith,lucas.smith@example.com,gorgias,I can't log into my account to check order #464863. Password reset email never arrives.,account,medium,neutral
+T-1141,Liam Brown,liam.brown@example.com,instagram_dm,"Requesting a refund for order #445824, the Ceramic Pour-Over Kettle doesn't fit as expected. What's your return policy?",refund,medium,neutral
+T-1142,Chloe Brown,chloe.brown@example.com,email,I want to cancel order #138479 and get a full refund. The Standing Desk Mat is not what was advertised.,refund,high,negative
+T-1143,Grace Cruz,grace.cruz@example.com,email,"Requesting a refund for order #910075, the Trail Runner Sneakers doesn't fit as expected. What's your return policy?",refund,medium,neutral
+T-1144,Amara Kim,amara.kim@example.com,gorgias,I can't log into my account to check order #296694. Password reset email never arrives.,account,medium,neutral
+T-1145,Lucas Okafor,lucas.okafor@example.com,shopify_review,Can I change the shipping address for order #896907? It hasn't shipped yet I think.,question,medium,neutral
+T-1146,Sofia Lopez,sofia.lopez@example.com,email,I want to cancel order #559398 and get a full refund. The Bamboo Cutting Board Set is not what was advertised.,refund,high,negative
+T-1147,Mateo Nguyen,mateo.nguyen@example.com,email,It's been 19 days and my order #425845 still shows 'label created'. I needed the Ceramic Pour-Over Kettle for a trip this weekend. What is going on?,shipping,high,negative
+T-1148,Kenji Smith,kenji.smith@example.com,instagram_dm,Does the Weighted Blanket come in other colors? Thinking about ordering another one after order #982277.,question,low,neutral
+T-1149,Sofia Patel,sofia.patel@example.com,instagram_dm,Tracking for order #633590 hasn't updated in 10 days. Can someone check on the Bamboo Cutting Board Set?,shipping,medium,negative
+T-1150,Lucas Patel,lucas.patel@example.com,shopify_review,"Just checking the ETA on order #578975, the Weighted Blanket page said 5-7 days.",shipping,low,neutral
+T-1151,Elena Lopez,elena.lopez@example.com,email,Just wanted to say the Cast Iron Skillet I got (order #632929) exceeded expectations! Fast shipping too.,praise,low,positive
+T-1152,Kenji Cruz,kenji.cruz@example.com,gorgias,I want to cancel order #380150 and get a full refund. The Standing Desk Mat is not what was advertised.,refund,high,negative
+T-1153,Diego Brown,diego.brown@example.com,shopify_review,"The Cast Iron Skillet from order #708093 was a great gift idea, my mom loved it!",praise,medium,positive
+T-1154,Lucas Cruz,lucas.cruz@example.com,instagram_dm,Five stars for the Wireless Earbuds Pro. Ordered a second one already. Great customer service on order #678727.,praise,low,positive
+T-1155,Priya Brown,priya.brown@example.com,instagram_dm,Five stars for the Weighted Blanket. Ordered a second one already. Great customer service on order #831380.,praise,low,positive
+T-1156,Kenji Reyes,kenji.reyes@example.com,instagram_dm,My Wireless Earbuds Pro from order #880879 stopped working after 17 days of light use. Really disappointed.,defect,medium,negative
+T-1157,Sofia Patel,sofia.patel@example.com,gorgias,Just wanted to say the Everyday Tote I got (order #232378) exceeded expectations! Fast shipping too.,praise,low,positive
+T-1158,Liam Brown,liam.brown@example.com,instagram_dm,"Just checking the ETA on order #204555, the Insulated Water Bottle page said 5-7 days.",shipping,low,neutral
+T-1159,Sofia Kim,sofia.kim@example.com,gorgias,It's been 17 days and my order #178463 still shows 'label created'. I needed the Ceramic Pour-Over Kettle for a trip this weekend. What is going on?,shipping,high,negative
+T-1160,Chloe Okafor,chloe.okafor@example.com,instagram_dm,"Requesting a refund for order #993140, the Trail Runner Sneakers doesn't fit as expected. What's your return policy?",refund,medium,neutral
+T-1161,Lucas Brown,lucas.brown@example.com,email,"Requesting a refund for order #137642, the Standing Desk Mat doesn't fit as expected. What's your return policy?",refund,medium,neutral
+T-1162,Diego Garcia,diego.garcia@example.com,email,My Trail Runner Sneakers from order #555052 stopped working after 5 days of light use. Really disappointed.,defect,medium,negative
+T-1163,Noah Nguyen,noah.nguyen@example.com,gorgias,Five stars for the Bamboo Cutting Board Set. Ordered a second one already. Great customer service on order #130353.,praise,low,positive
+T-1164,James Novak,james.novak@example.com,shopify_review,Order #493049: the Wireless Earbuds Pro caught a weird smell out of the box and part of it is discolored. Is this even safe to use?,defect,high,negative
+T-1165,Kenji Rossi,kenji.rossi@example.com,email,My Ceramic Pour-Over Kettle from order #278240 stopped working after 7 days of light use. Really disappointed.,defect,medium,negative
+T-1166,Chloe Rossi,chloe.rossi@example.com,shopify_review,Can I change the shipping address for order #621841? It hasn't shipped yet I think.,question,medium,neutral
+T-1167,Amara Okafor,amara.okafor@example.com,email,My Bamboo Cutting Board Set from order #581894 stopped working after 10 days of light use. Really disappointed.,defect,medium,negative
+T-1168,Amara Lopez,amara.lopez@example.com,shopify_review,This is the THIRD time I'm emailing about order #810526. If this isn't resolved by Friday I'm disputing the charge with my bank and posting about it.,ambiguous,high,negative
+T-1169,Amara Cruz,amara.cruz@example.com,gorgias,Tracking for order #413685 hasn't updated in 15 days. Can someone check on the Cast Iron Skillet?,shipping,medium,negative
+T-1170,Diego Garcia,diego.garcia@example.com,email,Five stars for the Linen Bedsheet Set. Ordered a second one already. Great customer service on order #994787.,praise,low,positive
+T-1171,Chloe Rossi,chloe.rossi@example.com,gorgias,My Wireless Earbuds Pro from order #702733 stopped working after 11 days of light use. Really disappointed.,defect,medium,negative
+T-1172,Chloe Novak,chloe.novak@example.com,instagram_dm,It's been 3 days and my order #693419 still shows 'label created'. I needed the Everyday Tote for a trip this weekend. What is going on?,shipping,high,negative
+T-1173,Diego Santos,diego.santos@example.com,shopify_review,"Just checking the ETA on order #736553, the Weighted Blanket page said 5-7 days.",shipping,low,neutral
+T-1174,Elena Rossi,elena.rossi@example.com,email,I can't log into my account to check order #810687. Password reset email never arrives.,account,medium,neutral
+T-1175,James Novak,james.novak@example.com,gorgias,This is the THIRD time I'm emailing about order #134985. If this isn't resolved by Friday I'm disputing the charge with my bank and posting about it.,ambiguous,high,negative
+T-1176,Sofia Smith,sofia.smith@example.com,shopify_review,"The Bamboo Cutting Board Set from order #442589 was a great gift idea, my mom loved it!",praise,medium,positive
+T-1177,Sofia Santos,sofia.santos@example.com,gorgias,My Standing Desk Mat from order #483629 stopped working after 18 days of light use. Really disappointed.,defect,medium,negative
+T-1178,Noah Novak,noah.novak@example.com,gorgias,"Just checking the ETA on order #945664, the Insulated Water Bottle page said 5-7 days.",shipping,low,neutral
+T-1179,Liam Patel,liam.patel@example.com,instagram_dm,Order #247594: the Trail Runner Sneakers caught a weird smell out of the box and part of it is discolored. Is this even safe to use?,defect,high,negative
+T-1180,Ethan Smith,ethan.smith@example.com,email,"Just checking the ETA on order #114594, the Linen Bedsheet Set page said 5-7 days.",shipping,low,neutral
+T-1181,Ethan Okafor,ethan.okafor@example.com,gorgias,Five stars for the Bamboo Cutting Board Set. Ordered a second one already. Great customer service on order #712955.,praise,low,positive
+T-1182,Mateo Patel,mateo.patel@example.com,gorgias,Tracking for order #749641 hasn't updated in 19 days. Can someone check on the Everyday Tote?,shipping,medium,negative
+T-1183,Mateo Okafor,mateo.okafor@example.com,gorgias,This is the THIRD time I'm emailing about order #766269. If this isn't resolved by Friday I'm disputing the charge with my bank and posting about it.,ambiguous,high,negative
+T-1184,Kenji Smith,kenji.smith@example.com,gorgias,I can't log into my account to check order #147549. Password reset email never arrives.,account,medium,neutral
+T-1185,Liam Smith,liam.smith@example.com,instagram_dm,Five stars for the Weighted Blanket. Ordered a second one already. Great customer service on order #663658.,praise,low,positive
+T-1186,Ethan Okafor,ethan.okafor@example.com,shopify_review,Five stars for the Standing Desk Mat. Ordered a second one already. Great customer service on order #539486.,praise,low,positive
+T-1187,Kenji Okafor,kenji.okafor@example.com,instagram_dm,This is the THIRD time I'm emailing about order #974190. If this isn't resolved by Friday I'm disputing the charge with my bank and posting about it.,ambiguous,high,negative
+T-1188,James Nguyen,james.nguyen@example.com,instagram_dm,I want to cancel order #327823 and get a full refund. The Wireless Earbuds Pro is not what was advertised.,refund,high,negative
+T-1189,Ethan Smith,ethan.smith@example.com,email,My Wireless Earbuds Pro from order #670913 stopped working after 13 days of light use. Really disappointed.,defect,medium,negative
+T-1190,Grace Garcia,grace.garcia@example.com,email,Just wanted to say the Trail Runner Sneakers I got (order #989227) exceeded expectations! Fast shipping too.,praise,low,positive
+T-1191,Elena Okafor,elena.okafor@example.com,gorgias,I can't log into my account to check order #122394. Password reset email never arrives.,account,medium,neutral
+T-1192,Sofia Santos,sofia.santos@example.com,shopify_review,My Cast Iron Skillet from order #315173 stopped working after 4 days of light use. Really disappointed.,defect,medium,negative
+T-1193,Elena Brown,elena.brown@example.com,email,Can I change the shipping address for order #444519? It hasn't shipped yet I think.,question,medium,neutral
+T-1194,Sofia Khan,sofia.khan@example.com,email,I want to cancel order #362829 and get a full refund. The Standing Desk Mat is not what was advertised.,refund,high,negative
+T-1195,Maria Khan,maria.khan@example.com,gorgias,I can't log into my account to check order #475644. Password reset email never arrives.,account,medium,neutral
+T-1196,Noah Novak,noah.novak@example.com,email,It's been 15 days and my order #232915 still shows 'label created'. I needed the Everyday Tote for a trip this weekend. What is going on?,shipping,high,negative
+T-1197,Aisha Patel,aisha.patel@example.com,email,"The Insulated Water Bottle from order #915809 was a great gift idea, my mom loved it!",praise,medium,positive
+T-1198,Mateo Rossi,mateo.rossi@example.com,gorgias,Five stars for the Everyday Tote. Ordered a second one already. Great customer service on order #862569.,praise,low,positive
+T-1199,Maria Reyes,maria.reyes@example.com,instagram_dm,Five stars for the Insulated Water Bottle. Ordered a second one already. Great customer service on order #988456.,praise,low,positive
+T-1200,Liam Patel,liam.patel@example.com,gorgias,I can't log into my account to check order #177060. Password reset email never arrives.,account,medium,neutral
+T-1201,Sofia Smith,sofia.smith@example.com,gorgias,Can I change the shipping address for order #388375? It hasn't shipped yet I think.,question,medium,neutral
+T-1202,Diego Patel,diego.patel@example.com,email,Just wanted to say the Standing Desk Mat I got (order #734836) exceeded expectations! Fast shipping too.,praise,low,positive
+T-1203,Liam Brown,liam.brown@example.com,instagram_dm,Order #855855: the Standing Desk Mat caught a weird smell out of the box and part of it is discolored. Is this even safe to use?,defect,high,negative
+T-1204,Mateo Kim,mateo.kim@example.com,instagram_dm,Five stars for the Wireless Earbuds Pro. Ordered a second one already. Great customer service on order #967611.,praise,low,positive
+T-1205,Liam Cruz,liam.cruz@example.com,gorgias,Just wanted to say the Linen Bedsheet Set I got (order #427704) exceeded expectations! Fast shipping too.,praise,low,positive
+T-1206,Lucas Smith,lucas.smith@example.com,email,The Trail Runner Sneakers I received (order #972176) arrived broken/cracked. This is unacceptable for the price. I want a replacement or refund.,defect,high,negative
+T-1207,Liam Nguyen,liam.nguyen@example.com,email,Just wanted to say the Wireless Earbuds Pro I got (order #951201) exceeded expectations! Fast shipping too.,praise,low,positive
+T-1208,Priya Okafor,priya.okafor@example.com,instagram_dm,Can I change the shipping address for order #530764? It hasn't shipped yet I think.,question,medium,neutral
+T-1209,James Novak,james.novak@example.com,email,"Just checking the ETA on order #427626, the Cast Iron Skillet page said 5-7 days.",shipping,low,neutral
+T-1210,Elena Khan,elena.khan@example.com,gorgias,Can I change the shipping address for order #335137? It hasn't shipped yet I think.,question,medium,neutral
+T-1211,Ethan Smith,ethan.smith@example.com,instagram_dm,"Just checking the ETA on order #701987, the Bamboo Cutting Board Set page said 5-7 days.",shipping,low,neutral
+T-1212,Maria Rossi,maria.rossi@example.com,gorgias,"Just checking the ETA on order #130359, the Bamboo Cutting Board Set page said 5-7 days.",shipping,low,neutral
+T-1213,Diego Lopez,diego.lopez@example.com,shopify_review,"The Wireless Earbuds Pro from order #468074 was a great gift idea, my mom loved it!",praise,medium,positive
+T-1214,Sofia Rossi,sofia.rossi@example.com,email,"Just checking the ETA on order #172965, the Linen Bedsheet Set page said 5-7 days.",shipping,low,neutral
+T-1215,Elena Kim,elena.kim@example.com,shopify_review,Tracking for order #575682 hasn't updated in 12 days. Can someone check on the Linen Bedsheet Set?,shipping,medium,negative
+T-1216,Diego Nguyen,diego.nguyen@example.com,email,"Requesting a refund for order #914571, the Wireless Earbuds Pro doesn't fit as expected. What's your return policy?",refund,medium,neutral
+T-1217,James Khan,james.khan@example.com,email,This is the THIRD time I'm emailing about order #891083. If this isn't resolved by Friday I'm disputing the charge with my bank and posting about it.,ambiguous,high,negative
+T-1218,Aisha Novak,aisha.novak@example.com,instagram_dm,I can't log into my account to check order #794093. Password reset email never arrives.,account,medium,neutral
+T-1219,Amara Kim,amara.kim@example.com,email,Can I change the shipping address for order #326040? It hasn't shipped yet I think.,question,medium,neutral
+T-1220,Kenji Smith,kenji.smith@example.com,instagram_dm,"Requesting a refund for order #811163, the Bamboo Cutting Board Set doesn't fit as expected. What's your return policy?",refund,medium,neutral
+T-1221,Diego Reyes,diego.reyes@example.com,email,Does the Weighted Blanket come in other colors? Thinking about ordering another one after order #514463.,question,low,neutral
+T-1222,Elena Novak,elena.novak@example.com,gorgias,It's been 6 days and my order #904624 still shows 'label created'. I needed the Weighted Blanket for a trip this weekend. What is going on?,shipping,high,negative
+T-1223,Priya Smith,priya.smith@example.com,shopify_review,I want to cancel order #621546 and get a full refund. The Everyday Tote is not what was advertised.,refund,high,negative
+T-1224,Chloe Dela Cruz,chloe.dela.cruz@example.com,gorgias,The Weighted Blanket I received (order #624563) arrived broken/cracked. This is unacceptable for the price. I want a replacement or refund.,defect,high,negative
+T-1225,Chloe Brown,chloe.brown@example.com,instagram_dm,Tracking for order #557409 hasn't updated in 2 days. Can someone check on the Everyday Tote?,shipping,medium,negative
+T-1226,Aisha Brown,aisha.brown@example.com,instagram_dm,This is the THIRD time I'm emailing about order #703727. If this isn't resolved by Friday I'm disputing the charge with my bank and posting about it.,ambiguous,high,negative
+T-1227,Kenji Novak,kenji.novak@example.com,gorgias,"The Trail Runner Sneakers from order #524707 was a great gift idea, my mom loved it!",praise,medium,positive
+T-1228,Amara Brown,amara.brown@example.com,email,The Wireless Earbuds Pro I received (order #192410) arrived broken/cracked. This is unacceptable for the price. I want a replacement or refund.,defect,high,negative
+T-1229,Kenji Rossi,kenji.rossi@example.com,instagram_dm,My Linen Bedsheet Set from order #649414 stopped working after 4 days of light use. Really disappointed.,defect,medium,negative
+T-1230,Diego Nguyen,diego.nguyen@example.com,shopify_review,"Just checking the ETA on order #332335, the Wireless Earbuds Pro page said 5-7 days.",shipping,low,neutral
+T-1231,Liam Dela Cruz,liam.dela.cruz@example.com,gorgias,Tracking for order #303322 hasn't updated in 13 days. Can someone check on the Standing Desk Mat?,shipping,medium,negative
+T-1232,Sofia Garcia,sofia.garcia@example.com,shopify_review,"The Trail Runner Sneakers from order #253557 was a great gift idea, my mom loved it!",praise,medium,positive
+T-1233,Sofia Santos,sofia.santos@example.com,instagram_dm,The Trail Runner Sneakers I received (order #285751) arrived broken/cracked. This is unacceptable for the price. I want a replacement or refund.,defect,high,negative
+T-1234,Amara Okafor,amara.okafor@example.com,gorgias,Order #774225: the Cast Iron Skillet caught a weird smell out of the box and part of it is discolored. Is this even safe to use?,defect,high,negative
+T-1235,Priya Khan,priya.khan@example.com,instagram_dm,"Just checking the ETA on order #171603, the Insulated Water Bottle page said 5-7 days.",shipping,low,neutral
+T-1236,Diego Santos,diego.santos@example.com,gorgias,I can't log into my account to check order #720148. Password reset email never arrives.,account,medium,neutral
+T-1237,Aisha Novak,aisha.novak@example.com,email,Does the Insulated Water Bottle come in other colors? Thinking about ordering another one after order #573866.,question,low,neutral
+T-1238,Diego Smith,diego.smith@example.com,instagram_dm,"Requesting a refund for order #744883, the Trail Runner Sneakers doesn't fit as expected. What's your return policy?",refund,medium,neutral
+T-1239,James Patel,james.patel@example.com,gorgias,Five stars for the Cast Iron Skillet. Ordered a second one already. Great customer service on order #783501.,praise,low,positive
+T-1240,Lucas Dela Cruz,lucas.dela.cruz@example.com,email,Can I change the shipping address for order #164879? It hasn't shipped yet I think.,question,medium,neutral
+T-1241,Priya Nguyen,priya.nguyen@example.com,email,Order #629057: the Trail Runner Sneakers caught a weird smell out of the box and part of it is discolored. Is this even safe to use?,defect,high,negative
+T-1242,Amara Patel,amara.patel@example.com,shopify_review,My Standing Desk Mat from order #648141 stopped working after 21 days of light use. Really disappointed.,defect,medium,negative
+T-1243,Ethan Lopez,ethan.lopez@example.com,gorgias,"Requesting a refund for order #506235, the Bamboo Cutting Board Set doesn't fit as expected. What's your return policy?",refund,medium,neutral
+T-1244,James Santos,james.santos@example.com,email,I can't log into my account to check order #169113. Password reset email never arrives.,account,medium,neutral
+T-1245,Chloe Novak,chloe.novak@example.com,shopify_review,Does the Bamboo Cutting Board Set come in other colors? Thinking about ordering another one after order #858889.,question,low,neutral
+T-1246,Aisha Rossi,aisha.rossi@example.com,instagram_dm,"Requesting a refund for order #466813, the Ceramic Pour-Over Kettle doesn't fit as expected. What's your return policy?",refund,medium,neutral
+T-1247,Aisha Novak,aisha.novak@example.com,shopify_review,The Standing Desk Mat I received (order #494976) arrived broken/cracked. This is unacceptable for the price. I want a replacement or refund.,defect,high,negative
+T-1248,Aisha Okafor,aisha.okafor@example.com,email,I can't log into my account to check order #633188. Password reset email never arrives.,account,medium,neutral
+T-1249,Diego Khan,diego.khan@example.com,shopify_review,"Requesting a refund for order #458332, the Weighted Blanket doesn't fit as expected. What's your return policy?",refund,medium,neutral
+T-1250,Sofia Khan,sofia.khan@example.com,email,My Trail Runner Sneakers from order #410160 stopped working after 5 days of light use. Really disappointed.,defect,medium,negative
+T-1251,Priya Lopez,priya.lopez@example.com,instagram_dm,I can't log into my account to check order #237414. Password reset email never arrives.,account,medium,neutral
+T-1252,Noah Khan,noah.khan@example.com,instagram_dm,The Cast Iron Skillet I received (order #948343) arrived broken/cracked. This is unacceptable for the price. I want a replacement or refund.,defect,high,negative
+T-1253,Kenji Cruz,kenji.cruz@example.com,gorgias,It's been 21 days and my order #565776 still shows 'label created'. I needed the Weighted Blanket for a trip this weekend. What is going on?,shipping,high,negative
+T-1254,Amara Garcia,amara.garcia@example.com,instagram_dm,Order #350786: the Standing Desk Mat caught a weird smell out of the box and part of it is discolored. Is this even safe to use?,defect,high,negative
+T-1255,Elena Cruz,elena.cruz@example.com,gorgias,This is the THIRD time I'm emailing about order #561999. If this isn't resolved by Friday I'm disputing the charge with my bank and posting about it.,ambiguous,high,negative
+T-1256,Chloe Dela Cruz,chloe.dela.cruz@example.com,shopify_review,Order #538997: the Standing Desk Mat caught a weird smell out of the box and part of it is discolored. Is this even safe to use?,defect,high,negative
+T-1257,Sofia Brown,sofia.brown@example.com,gorgias,Order #154714: the Bamboo Cutting Board Set caught a weird smell out of the box and part of it is discolored. Is this even safe to use?,defect,high,negative
+T-1258,Liam Nguyen,liam.nguyen@example.com,gorgias,Does the Standing Desk Mat come in other colors? Thinking about ordering another one after order #992512.,question,low,neutral
+T-1259,Noah Novak,noah.novak@example.com,instagram_dm,Tracking for order #638289 hasn't updated in 6 days. Can someone check on the Insulated Water Bottle?,shipping,medium,negative
+T-1260,Mateo Brown,mateo.brown@example.com,instagram_dm,Tracking for order #466566 hasn't updated in 2 days. Can someone check on the Insulated Water Bottle?,shipping,medium,negative
+T-1261,Chloe Dela Cruz,chloe.dela.cruz@example.com,email,It's been 14 days and my order #347231 still shows 'label created'. I needed the Wireless Earbuds Pro for a trip this weekend. What is going on?,shipping,high,negative
+T-1262,Mateo Reyes,mateo.reyes@example.com,shopify_review,"Requesting a refund for order #203896, the Wireless Earbuds Pro doesn't fit as expected. What's your return policy?",refund,medium,neutral
+T-1263,James Novak,james.novak@example.com,instagram_dm,The Insulated Water Bottle I received (order #829884) arrived broken/cracked. This is unacceptable for the price. I want a replacement or refund.,defect,high,negative
+T-1264,Maria Lopez,maria.lopez@example.com,shopify_review,Five stars for the Trail Runner Sneakers. Ordered a second one already. Great customer service on order #119927.,praise,low,positive
+T-1265,Sofia Dela Cruz,sofia.dela.cruz@example.com,email,"Just checking the ETA on order #653408, the Cast Iron Skillet page said 5-7 days.",shipping,low,neutral
+T-1266,Diego Garcia,diego.garcia@example.com,shopify_review,Order #227767: the Bamboo Cutting Board Set caught a weird smell out of the box and part of it is discolored. Is this even safe to use?,defect,high,negative
+T-1267,Amara Smith,amara.smith@example.com,email,Just wanted to say the Trail Runner Sneakers I got (order #977330) exceeded expectations! Fast shipping too.,praise,low,positive
+T-1268,Mateo Nguyen,mateo.nguyen@example.com,email,I can't log into my account to check order #405420. Password reset email never arrives.,account,medium,neutral
+T-1269,Ethan Garcia,ethan.garcia@example.com,email,Can I change the shipping address for order #536802? It hasn't shipped yet I think.,question,medium,neutral
+T-1270,Ethan Smith,ethan.smith@example.com,email,Does the Standing Desk Mat come in other colors? Thinking about ordering another one after order #670511.,question,low,neutral
+T-1271,Lucas Reyes,lucas.reyes@example.com,email,Just wanted to say the Linen Bedsheet Set I got (order #491435) exceeded expectations! Fast shipping too.,praise,low,positive
+T-1272,Aisha Cruz,aisha.cruz@example.com,gorgias,"Requesting a refund for order #868544, the Weighted Blanket doesn't fit as expected. What's your return policy?",refund,medium,neutral
+T-1273,James Cruz,james.cruz@example.com,instagram_dm,The Standing Desk Mat I received (order #454992) arrived broken/cracked. This is unacceptable for the price. I want a replacement or refund.,defect,high,negative
+T-1274,Lucas Okafor,lucas.okafor@example.com,email,"The Ceramic Pour-Over Kettle from order #950916 was a great gift idea, my mom loved it!",praise,medium,positive
+T-1275,Amara Reyes,amara.reyes@example.com,shopify_review,"The Bamboo Cutting Board Set from order #311383 was a great gift idea, my mom loved it!",praise,medium,positive
+T-1276,James Cruz,james.cruz@example.com,instagram_dm,This is the THIRD time I'm emailing about order #640418. If this isn't resolved by Friday I'm disputing the charge with my bank and posting about it.,ambiguous,high,negative
+T-1277,James Santos,james.santos@example.com,email,I want to cancel order #400009 and get a full refund. The Weighted Blanket is not what was advertised.,refund,high,negative
+T-1278,Priya Novak,priya.novak@example.com,instagram_dm,"Just checking the ETA on order #938171, the Trail Runner Sneakers page said 5-7 days.",shipping,low,neutral
+T-1279,Chloe Nguyen,chloe.nguyen@example.com,shopify_review,This is the THIRD time I'm emailing about order #505426. If this isn't resolved by Friday I'm disputing the charge with my bank and posting about it.,ambiguous,high,negative
+T-1280,Lucas Cruz,lucas.cruz@example.com,instagram_dm,Five stars for the Standing Desk Mat. Ordered a second one already. Great customer service on order #379676.,praise,low,positive
+T-1281,Kenji Rossi,kenji.rossi@example.com,gorgias,Tracking for order #671971 hasn't updated in 11 days. Can someone check on the Ceramic Pour-Over Kettle?,shipping,medium,negative
+T-1282,Aisha Cruz,aisha.cruz@example.com,instagram_dm,Tracking for order #421384 hasn't updated in 16 days. Can someone check on the Bamboo Cutting Board Set?,shipping,medium,negative
+T-1283,Amara Cruz,amara.cruz@example.com,instagram_dm,The Insulated Water Bottle I received (order #144412) arrived broken/cracked. This is unacceptable for the price. I want a replacement or refund.,defect,high,negative
+T-1284,James Smith,james.smith@example.com,shopify_review,I want to cancel order #480959 and get a full refund. The Linen Bedsheet Set is not what was advertised.,refund,high,negative
+T-1285,Sofia Brown,sofia.brown@example.com,email,It's been 16 days and my order #811027 still shows 'label created'. I needed the Cast Iron Skillet for a trip this weekend. What is going on?,shipping,high,negative
+T-1286,Aisha Garcia,aisha.garcia@example.com,email,The Wireless Earbuds Pro I received (order #479742) arrived broken/cracked. This is unacceptable for the price. I want a replacement or refund.,defect,high,negative
+T-1287,Sofia Okafor,sofia.okafor@example.com,instagram_dm,Can I change the shipping address for order #488984? It hasn't shipped yet I think.,question,medium,neutral
+T-1288,Aisha Rossi,aisha.rossi@example.com,instagram_dm,Order #655178: the Ceramic Pour-Over Kettle caught a weird smell out of the box and part of it is discolored. Is this even safe to use?,defect,high,negative
+T-1289,Grace Garcia,grace.garcia@example.com,instagram_dm,"Requesting a refund for order #127172, the Trail Runner Sneakers doesn't fit as expected. What's your return policy?",refund,medium,neutral
+T-1290,Chloe Lopez,chloe.lopez@example.com,gorgias,Does the Standing Desk Mat come in other colors? Thinking about ordering another one after order #223481.,question,low,neutral
+T-1291,Amara Garcia,amara.garcia@example.com,shopify_review,"The Cast Iron Skillet from order #399449 was a great gift idea, my mom loved it!",praise,medium,positive
+T-1292,Sofia Brown,sofia.brown@example.com,instagram_dm,Tracking for order #574001 hasn't updated in 7 days. Can someone check on the Trail Runner Sneakers?,shipping,medium,negative
+T-1293,Priya Okafor,priya.okafor@example.com,gorgias,Tracking for order #844007 hasn't updated in 4 days. Can someone check on the Wireless Earbuds Pro?,shipping,medium,negative
+T-1294,Diego Brown,diego.brown@example.com,gorgias,This is the THIRD time I'm emailing about order #846385. If this isn't resolved by Friday I'm disputing the charge with my bank and posting about it.,ambiguous,high,negative
+T-1295,Mateo Smith,mateo.smith@example.com,shopify_review,Does the Weighted Blanket come in other colors? Thinking about ordering another one after order #930541.,question,low,neutral
+T-1296,Lucas Reyes,lucas.reyes@example.com,gorgias,Order #680933: the Wireless Earbuds Pro caught a weird smell out of the box and part of it is discolored. Is this even safe to use?,defect,high,negative
+T-1297,Sofia Rossi,sofia.rossi@example.com,instagram_dm,Five stars for the Trail Runner Sneakers. Ordered a second one already. Great customer service on order #168941.,praise,low,positive
+T-1298,Lucas Dela Cruz,lucas.dela.cruz@example.com,email,"The Linen Bedsheet Set from order #906527 was a great gift idea, my mom loved it!",praise,medium,positive
+T-1299,Priya Okafor,priya.okafor@example.com,gorgias,The Trail Runner Sneakers I received (order #571832) arrived broken/cracked. This is unacceptable for the price. I want a replacement or refund.,defect,high,negative
