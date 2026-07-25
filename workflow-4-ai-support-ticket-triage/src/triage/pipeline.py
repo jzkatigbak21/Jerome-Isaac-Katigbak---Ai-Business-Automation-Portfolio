@@ -49,6 +49,10 @@ def apply_safety_net(ticket: Ticket, result: TriageResult) -> TriageResult:
     if reasons and not result.needs_human_review:
         combined_reason = "; ".join(reasons)
         logger.info("Safety net overrode model on %s: %s", ticket.ticket_id, combined_reason)
+        # Unlike a model-flagged ticket (which drafts a deliberately hedged
+        # starting point, see prompts.py), this draft was written believing
+        # the ticket was safe -- it wasn't written with the risk in mind, so
+        # it's discarded rather than surfaced as a "starting point."
         return result.model_copy(update={
             "needs_human_review": True,
             "review_reason": combined_reason,
@@ -93,15 +97,16 @@ def run_batch(tickets: list[Ticket], client: TriageClient, max_workers: int = 5)
 
 def summarize(outcome: BatchOutcome, total: int) -> str:
     flagged = sum(1 for r in outcome.results if r.needs_human_review)
-    auto_replied = sum(1 for r in outcome.results if r.draft_reply)
+    auto_replied = sum(1 for r in outcome.results if r.draft_reply and not r.needs_human_review)
+    flagged_with_draft = sum(1 for r in outcome.results if r.draft_reply and r.needs_human_review)
     by_category: dict[str, int] = {}
     for r in outcome.results:
         by_category[r.category] = by_category.get(r.category, 0) + 1
 
     lines = [
         f"Processed {len(outcome.results)}/{total} tickets ({len(outcome.failures)} failed after retries)",
-        f"Auto-drafted replies: {auto_replied}",
-        f"Flagged for human review: {flagged}",
+        f"Auto-drafted replies (ready to send): {auto_replied}",
+        f"Flagged for human review: {flagged} ({flagged_with_draft} with a suggested starting-point draft)",
         "By category: " + ", ".join(f"{k}={v}" for k, v in sorted(by_category.items())),
     ]
     return "\n".join(lines)

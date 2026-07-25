@@ -110,11 +110,20 @@ def has_ai_triage_note(mapped_ticket_id: str) -> bool:
 def format_triage_note(result) -> str:
     """Shared by the webhook (per-ticket, real-time) and the backfill script
     (batch, one-off) so a note looks the same regardless of which path
-    produced it."""
+    produced it.
+
+    Flagged tickets can now carry a draft too (a starting point, not a
+    ready-to-send reply) -- branch on needs_human_review, not on whether a
+    draft exists, so a flagged ticket's warning is never silently dropped
+    just because the model also drafted something for it.
+    """
     header = f"[AI Triage] category={result.category} urgency={result.urgency} confidence={result.confidence:.0%}"
-    if result.draft_reply:
-        return f"{header}\n\nSuggested reply (review before sending):\n\n{result.draft_reply}"
-    return f"{header} -- FLAGGED FOR HUMAN REVIEW\n\nReason: {result.review_reason}"
+    if result.needs_human_review:
+        parts = [f"{header} -- FLAGGED FOR HUMAN REVIEW", f"Reason: {result.review_reason}"]
+        if result.draft_reply:
+            parts.append(f"Suggested starting point (needs review, not ready to send):\n\n{result.draft_reply}")
+        return "\n\n".join(parts)
+    return f"{header}\n\nSuggested reply (review before sending):\n\n{result.draft_reply}"
 
 
 def post_internal_note(mapped_ticket_id: str, text: str) -> None:

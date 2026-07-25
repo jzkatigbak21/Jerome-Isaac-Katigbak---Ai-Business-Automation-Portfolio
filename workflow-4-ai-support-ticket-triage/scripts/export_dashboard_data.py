@@ -31,6 +31,8 @@ from src.triage.gorgias_client import fetch_tickets
 from src.triage.pipeline import process_one
 
 OUT_PATH = Path("out/dashboard_live_tickets.json")
+DASHBOARD_PATH = Path("dashboard.html")
+DATASET_KEY = "gorgias"
 
 
 def main() -> int:
@@ -59,12 +61,34 @@ def main() -> int:
             "reviewReason": result.review_reason,
             "draft": result.draft_reply,
         })
-        outcome = "auto-drafted" if result.draft_reply else "flagged for review"
+        outcome = "flagged for review" if result.needs_human_review else "auto-drafted"
         print(f"{result.ticket_id} ({ticket.customer_name}) -> {outcome} [{result.category}/{result.urgency}]")
 
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUT_PATH.write_text(json.dumps(rows, indent=2), encoding="utf-8")
     print(f"\nWrote {len(rows)} tickets to {OUT_PATH}")
+
+    html = DASHBOARD_PATH.read_text(encoding="utf-8")
+    new_dataset = (
+        f'    {DATASET_KEY}: {{\n'
+        f'      label: "Live Gorgias Run",\n'
+        f'      sub: "{len(rows)} real tickets · Shopify dev store",\n'
+        f'      live: true,\n'
+        f'      tickets: {json.dumps(rows, indent=2)},\n'
+        f'    }},\n'
+    )
+    start_marker = f"    {DATASET_KEY}: {{\n"
+    block_close_marker = "\n    },\n"  # this key's OWN closing brace, not the whole DATASETS object's
+    datasets_close_marker = "\n  };"
+    start = html.find(start_marker)
+    if start != -1:
+        end = html.index(block_close_marker, start) + len(block_close_marker)
+        html = html[:start] + new_dataset + html[end:]
+    else:
+        close = html.rindex(datasets_close_marker)
+        html = html[:close] + "\n" + new_dataset.rstrip("\n") + html[close:]
+    DASHBOARD_PATH.write_text(html, encoding="utf-8")
+    print(f"Injected {len(rows)} tickets into dashboard.html as dataset '{DATASET_KEY}'")
     return 0
 
 

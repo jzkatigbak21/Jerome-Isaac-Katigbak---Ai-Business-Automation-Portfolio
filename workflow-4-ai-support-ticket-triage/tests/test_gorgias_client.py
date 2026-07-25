@@ -14,6 +14,7 @@ import pytest
 
 from src.triage.gorgias_client import (
     fetch_tickets,
+    format_triage_note,
     has_ai_triage_note,
     post_internal_note,
     surface_flagged_ticket,
@@ -185,6 +186,40 @@ def _make_result(**overrides) -> TriageResult:
     )
     defaults.update(overrides)
     return TriageResult(**defaults)
+
+
+def test_format_triage_note_ready_to_send_when_not_flagged():
+    result = _make_result(needs_human_review=False, draft_reply="Hi! -- The Support Team")
+
+    note = format_triage_note(result)
+
+    assert "FLAGGED FOR HUMAN REVIEW" not in note
+    assert "Suggested reply (review before sending)" in note
+    assert "Hi! -- The Support Team" in note
+
+
+def test_format_triage_note_flagged_without_draft_shows_reason_only():
+    result = _make_result(needs_human_review=True, review_reason="chargeback threat", draft_reply=None)
+
+    note = format_triage_note(result)
+
+    assert "FLAGGED FOR HUMAN REVIEW" in note
+    assert "chargeback threat" in note
+    assert "Suggested starting point" not in note
+
+
+def test_format_triage_note_flagged_with_draft_shows_both_never_drops_the_flag():
+    result = _make_result(
+        needs_human_review=True, review_reason="chargeback threat",
+        draft_reply="Hi, sorry for the trouble -- we're looking into this now.",
+    )
+
+    note = format_triage_note(result)
+
+    assert "FLAGGED FOR HUMAN REVIEW" in note
+    assert "chargeback threat" in note
+    assert "Suggested starting point (needs review, not ready to send)" in note
+    assert "we're looking into this now" in note
 
 
 def test_surface_flagged_ticket_is_noop_when_not_flagged():

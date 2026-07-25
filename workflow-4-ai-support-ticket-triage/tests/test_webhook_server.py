@@ -45,7 +45,7 @@ def _fake_result(ticket_id="GOR-1", needs_human_review=False, draft_reply="Hi! -
         confidence=0.9,
         needs_human_review=needs_human_review,
         review_reason="needs a human" if needs_human_review else None,
-        draft_reply=None if needs_human_review else draft_reply,
+        draft_reply=draft_reply,
     )
 
 
@@ -77,9 +77,10 @@ def test_webhook_processes_ticket_and_logs_result():
 
 def test_webhook_flagged_ticket_note_includes_review_reason():
     ticket = Ticket("GOR-4", "Jane Doe", "email", "This is unacceptable, third time contacting.")
+    result = _fake_result(ticket_id="GOR-4", needs_human_review=True, draft_reply=None)
 
     with patch("src.webhook_server.fetch_single_ticket", return_value=ticket), \
-         patch("src.webhook_server.process_one", return_value=_fake_result(ticket_id="GOR-4", needs_human_review=True)), \
+         patch("src.webhook_server.process_one", return_value=result), \
          patch("src.webhook_server.post_internal_note") as mock_note, \
          patch("src.webhook_server.surface_flagged_ticket"):
         client = TestClient(app)
@@ -89,6 +90,32 @@ def test_webhook_flagged_ticket_note_includes_review_reason():
     note_text = mock_note.call_args[0][1]
     assert "FLAGGED FOR HUMAN REVIEW" in note_text
     assert "needs a human" in note_text
+
+
+def test_webhook_flagged_ticket_with_draft_note_includes_both():
+    """A flagged ticket can still carry a draft -- a starting point for the
+    agent to edit, not a ready-to-send reply. The note must never drop the
+    flag warning just because a draft is also present.
+    """
+    ticket = Ticket("GOR-5", "Jane Doe", "email", "This is the third time I'm emailing, unacceptable.")
+    result = _fake_result(
+        ticket_id="GOR-5", needs_human_review=True,
+        draft_reply="Hi Jane, sorry for the repeated back-and-forth -- we're looking into this now.",
+    )
+
+    with patch("src.webhook_server.fetch_single_ticket", return_value=ticket), \
+         patch("src.webhook_server.process_one", return_value=result), \
+         patch("src.webhook_server.post_internal_note") as mock_note, \
+         patch("src.webhook_server.surface_flagged_ticket"):
+        client = TestClient(app)
+        response = client.post("/webhook/gorgias", json={"ticket_id": "5"})
+
+    assert response.json()["outcome"] == "flagged for review"
+    note_text = mock_note.call_args[0][1]
+    assert "FLAGGED FOR HUMAN REVIEW" in note_text
+    assert "needs a human" in note_text
+    assert "not ready to send" in note_text
+    assert "we're looking into this now" in note_text
 
 
 def test_webhook_calls_surface_flagged_ticket_with_customer_name_and_result():

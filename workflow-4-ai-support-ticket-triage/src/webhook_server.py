@@ -126,7 +126,7 @@ async def gorgias_webhook(request: Request, x_webhook_secret: str | None = Heade
     result = process_one(_get_client(), ticket)
     _append_result(result)
 
-    outcome = "auto-drafted" if result.draft_reply else "flagged for review"
+    outcome = "flagged for review" if result.needs_human_review else "auto-drafted"
     logger.info(
         "Ticket %s (%s) -> %s [%s/%s]",
         ticket.ticket_id, ticket.customer_name, outcome, result.category, result.urgency,

@@ -10,12 +10,24 @@ duplicate note, and no wasted Claude call, since the skip check happens
 before classification. New tickets since the last run still get
 processed fresh.
 
+--force bypasses that skip check and reclassifies every current ticket
+regardless -- useful after a prompt change (e.g. flagged tickets now
+getting a suggested draft) to refresh tickets that were already
+processed under the old prompt. Two side effects worth knowing before
+using it: (1) it posts an ADDITIONAL "[AI Triage]" note rather than
+editing the old one, so an already-processed ticket ends up with more
+than one such note in its thread; (2) surface_flagged_ticket() runs
+again too, so already-urgent-and-flagged tickets get tagged/prioritized
+again and get ANOTHER Slack ping, not just a fresh note.
+
 Usage:
     python scripts/backfill_notes.py
+    python scripts/backfill_notes.py --force
 """
 
 from __future__ import annotations
 
+import argparse
 import sys
 from pathlib import Path
 
@@ -35,6 +47,13 @@ from src.triage.pipeline import process_one
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument(
+        "--force", action="store_true",
+        help="Reprocess every ticket even if it already has an [AI Triage] note.",
+    )
+    args = parser.parse_args()
+
     load_dotenv()
 
     tickets = fetch_tickets()
@@ -44,7 +63,7 @@ def main() -> int:
     posted = 0
     skipped = 0
     for ticket in tickets:
-        if has_ai_triage_note(ticket.ticket_id):
+        if not args.force and has_ai_triage_note(ticket.ticket_id):
             print(f"{ticket.ticket_id} ({ticket.customer_name}) -> already processed, skipping")
             skipped += 1
             continue
@@ -61,7 +80,7 @@ def main() -> int:
         except Exception as exc:  # noqa: BLE001 - same reasoning
             print(f"  ! failed to surface flagged ticket {ticket.ticket_id}: {exc}")
 
-        outcome = "auto-drafted" if result.draft_reply else "flagged for review"
+        outcome = "flagged for review" if result.needs_human_review else "auto-drafted"
         print(f"{ticket.ticket_id} ({ticket.customer_name}) -> {outcome} [{result.category}/{result.urgency}]")
 
     print(f"\nPosted notes on {posted}/{len(tickets)} tickets ({skipped} already processed, skipped).")
