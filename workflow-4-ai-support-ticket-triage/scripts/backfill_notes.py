@@ -4,10 +4,11 @@ Slack ping) -- for tickets that predate the webhook's automatic handling
 (src/webhook_server.py), or were only ever processed via the CSV/
 --source gorgias batch path, which never wrote anything back into Gorgias.
 
-Not idempotent by design: every ticket fetch_tickets() returns gets
-reclassified (a fresh Claude call) and gets a fresh note/tags/notification,
-every run. Running it twice against the same tickets means double cost and
-duplicate notes/tags/pings. Run it once.
+Safe to re-run: tickets that already carry an "[AI Triage]" note (from a
+prior run of this script, or the webhook) are skipped entirely -- no
+duplicate note, and no wasted Claude call, since the skip check happens
+before classification. New tickets since the last run still get
+processed fresh.
 
 Usage:
     python scripts/backfill_notes.py
@@ -26,6 +27,7 @@ from src.triage.client import TriageClient
 from src.triage.gorgias_client import (
     fetch_tickets,
     format_triage_note,
+    has_ai_triage_note,
     post_internal_note,
     surface_flagged_ticket,
 )
@@ -40,7 +42,13 @@ def main() -> int:
 
     client = TriageClient()
     posted = 0
+    skipped = 0
     for ticket in tickets:
+        if has_ai_triage_note(ticket.ticket_id):
+            print(f"{ticket.ticket_id} ({ticket.customer_name}) -> already processed, skipping")
+            skipped += 1
+            continue
+
         result = process_one(client, ticket)
         try:
             post_internal_note(result.ticket_id, format_triage_note(result))
@@ -56,7 +64,7 @@ def main() -> int:
         outcome = "auto-drafted" if result.draft_reply else "flagged for review"
         print(f"{ticket.ticket_id} ({ticket.customer_name}) -> {outcome} [{result.category}/{result.urgency}]")
 
-    print(f"\nPosted notes on {posted}/{len(tickets)} tickets.")
+    print(f"\nPosted notes on {posted}/{len(tickets)} tickets ({skipped} already processed, skipped).")
     return 0
 
 

@@ -93,6 +93,20 @@ def fetch_single_ticket(ticket_id: str) -> Ticket | None:
         return _map_ticket(client, response.json())
 
 
+def has_ai_triage_note(mapped_ticket_id: str) -> bool:
+    """Used by the backfill script to skip a ticket that's already been
+    processed -- avoids both a duplicate note and a wasted Claude call on
+    a re-run, without needing a separate state file to track what's done."""
+    raw_id = mapped_ticket_id.removeprefix("GOR-")
+    with _client() as client:
+        response = client.get(f"/tickets/{raw_id}/messages")
+        response.raise_for_status()
+        return any(
+            (message.get("body_text") or "").startswith("[AI Triage]")
+            for message in response.json().get("data", [])
+        )
+
+
 def format_triage_note(result) -> str:
     """Shared by the webhook (per-ticket, real-time) and the backfill script
     (batch, one-off) so a note looks the same regardless of which path

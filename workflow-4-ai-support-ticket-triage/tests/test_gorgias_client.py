@@ -14,6 +14,7 @@ import pytest
 
 from src.triage.gorgias_client import (
     fetch_tickets,
+    has_ai_triage_note,
     post_internal_note,
     surface_flagged_ticket,
     update_ticket_flags,
@@ -41,6 +42,13 @@ MESSAGES_BY_TICKET = {
         # Only an agent auto-reply exists -- no customer message yet.
         "data": [
             {"from_agent": True, "sender": {"name": "Support Bot"}, "body_text": "We got your message!"},
+        ],
+    },
+    103: {
+        # Already backfilled: a prior [AI Triage] note is in the thread.
+        "data": [
+            {"from_agent": False, "sender": {"name": "Jane Doe"}, "body_text": "Where's my order?"},
+            {"from_agent": True, "sender": {"name": "bot"}, "body_text": "[AI Triage] category=shipping urgency=low confidence=80%"},
         ],
     },
 }
@@ -152,6 +160,14 @@ def test_update_ticket_flags_omits_priority_when_not_given():
 def test_update_ticket_flags_raises_on_error_response():
     with pytest.raises(httpx.HTTPStatusError):
         update_ticket_flags("GOR-888", tags=["ai-flagged"])
+
+
+def test_has_ai_triage_note_false_when_not_yet_processed():
+    assert has_ai_triage_note("GOR-101") is False
+
+
+def test_has_ai_triage_note_true_when_already_backfilled():
+    assert has_ai_triage_note("GOR-103") is True
 
 
 def _make_result(**overrides) -> TriageResult:

@@ -164,9 +164,13 @@ event, so it can't retroactively touch old tickets. `scripts/backfill_notes.py`
 covers that gap: it re-fetches existing tickets, classifies each, and
 applies the exact same `format_triage_note()` / `surface_flagged_ticket()`
 treatment the webhook would have -- both paths share the same functions,
-so old and new tickets end up identically handled. Not idempotent -- it
-reclassifies (a fresh Claude call) and re-applies everything fresh every
-run, so it's meant to be run once, not on a schedule:
+so old and new tickets end up identically handled.
+
+Safe to re-run: `has_ai_triage_note()` checks each ticket's thread for a
+prior `[AI Triage]` note *before* classifying, so a ticket already
+processed (by an earlier backfill run, or by the webhook) is skipped
+entirely -- no duplicate note, and no wasted Claude call, since the check
+happens before the classification step, not after.
 
 ```bash
 python scripts/backfill_notes.py
