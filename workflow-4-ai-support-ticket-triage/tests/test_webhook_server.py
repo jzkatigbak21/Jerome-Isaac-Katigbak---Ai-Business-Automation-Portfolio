@@ -34,11 +34,11 @@ def test_extract_ticket_id_accepts_common_payload_shapes(payload, expected):
     assert _extract_ticket_id(payload) == expected
 
 
-def _fake_result(ticket_id="GOR-1", needs_human_review=False, draft_reply="Hi! -- The Support Team"):
+def _fake_result(ticket_id="GOR-1", needs_human_review=False, draft_reply="Hi! -- The Support Team", urgency="low"):
     return TriageResult(
         ticket_id=ticket_id,
         sentiment="neutral",
-        urgency="low",
+        urgency=urgency,
         category="question",
         entities=Entities(order_number=None, product_name=None),
         issue_summary="Customer has a question.",
@@ -80,7 +80,9 @@ def test_webhook_flagged_ticket_note_includes_review_reason():
 
     with patch("src.webhook_server.fetch_single_ticket", return_value=ticket), \
          patch("src.webhook_server.process_one", return_value=_fake_result(ticket_id="GOR-4", needs_human_review=True)), \
-         patch("src.webhook_server.post_internal_note") as mock_note:
+         patch("src.webhook_server.post_internal_note") as mock_note, \
+         patch("src.webhook_server.update_ticket_flags"), \
+         patch("src.webhook_server.notify_slack"):
         client = TestClient(app)
         response = client.post("/webhook/gorgias", json={"ticket_id": "4"})
 
@@ -88,6 +90,60 @@ def test_webhook_flagged_ticket_note_includes_review_reason():
     note_text = mock_note.call_args[0][1]
     assert "FLAGGED FOR HUMAN REVIEW" in note_text
     assert "needs a human" in note_text
+
+
+def test_webhook_tags_flagged_ticket_without_bumping_priority_when_not_urgent():
+    """Every flagged ticket gets tagged so it surfaces in a saved view --
+    but priority is only bumped and Slack pinged for the genuinely urgent
+    ones, not every flag."""
+    ticket = Ticket("GOR-6", "Jane Doe", "email", "Can you clarify the return policy?")
+
+    with patch("src.webhook_server.fetch_single_ticket", return_value=ticket), \
+         patch("src.webhook_server.process_one",
+               return_value=_fake_result(ticket_id="GOR-6", needs_human_review=True, urgency="medium")), \
+         patch("src.webhook_server.post_internal_note"), \
+         patch("src.webhook_server.update_ticket_flags") as mock_flags, \
+         patch("src.webhook_server.notify_slack") as mock_slack:
+        client = TestClient(app)
+        client.post("/webhook/gorgias", json={"ticket_id": "6"})
+
+    mock_flags.assert_called_once_with("GOR-6", tags=["ai-flagged"], priority=None)
+    mock_slack.assert_not_called()
+
+
+def test_webhook_bumps_priority_and_notifies_slack_for_urgent_flagged_ticket():
+    ticket = Ticket("GOR-7", "Jane Doe", "email", "Third time emailing, disputing the charge.")
+
+    with patch("src.webhook_server.fetch_single_ticket", return_value=ticket), \
+         patch("src.webhook_server.process_one",
+               return_value=_fake_result(ticket_id="GOR-7", needs_human_review=True, urgency="high")), \
+         patch("src.webhook_server.post_internal_note"), \
+         patch("src.webhook_server.update_ticket_flags") as mock_flags, \
+         patch("src.webhook_server.notify_slack") as mock_slack:
+        client = TestClient(app)
+        client.post("/webhook/gorgias", json={"ticket_id": "7"})
+
+    mock_flags.assert_called_once_with("GOR-7", tags=["ai-flagged"], priority="high")
+    mock_slack.assert_called_once()
+    assert "GOR-7" in mock_slack.call_args[0][0]
+    assert "URGENT" in mock_slack.call_args[0][0]
+
+
+def test_webhook_does_not_tag_or_notify_for_auto_drafted_ticket():
+    """An auto-drafted (not flagged) ticket needs neither a tag nor a
+    Slack ping -- there's nothing for a human to be surfaced to."""
+    ticket = Ticket("GOR-8", "Jane Doe", "email", "Loved it, thanks!")
+
+    with patch("src.webhook_server.fetch_single_ticket", return_value=ticket), \
+         patch("src.webhook_server.process_one", return_value=_fake_result(ticket_id="GOR-8", urgency="high")), \
+         patch("src.webhook_server.post_internal_note"), \
+         patch("src.webhook_server.update_ticket_flags") as mock_flags, \
+         patch("src.webhook_server.notify_slack") as mock_slack:
+        client = TestClient(app)
+        client.post("/webhook/gorgias", json={"ticket_id": "8"})
+
+    mock_flags.assert_not_called()
+    mock_slack.assert_not_called()
 
 
 def test_webhook_note_post_failure_does_not_break_response():

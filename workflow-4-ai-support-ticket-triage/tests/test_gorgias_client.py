@@ -11,7 +11,7 @@ import json
 import httpx
 import pytest
 
-from src.triage.gorgias_client import fetch_tickets, post_internal_note
+from src.triage.gorgias_client import fetch_tickets, post_internal_note, update_ticket_flags
 
 TICKETS_PAGE = {
     "data": [
@@ -40,11 +40,24 @@ MESSAGES_BY_TICKET = {
 
 
 posted_messages: list[dict] = []
+put_requests: list[dict] = []
+
+TICKET_101_DETAIL = {
+    "id": 101,
+    "tags": [{"id": 1, "name": "ORDER-STATUS"}],
+}
 
 
 def _mock_handler(request: httpx.Request) -> httpx.Response:
     if request.method == "GET" and request.url.path == "/api/tickets":
         return httpx.Response(200, json=TICKETS_PAGE)
+    if request.method == "GET" and request.url.path == "/api/tickets/101":
+        return httpx.Response(200, json=TICKET_101_DETAIL)
+    if request.method == "GET" and request.url.path == "/api/tickets/888":
+        return httpx.Response(404, json={"error": "not found"})
+    if request.method == "PUT" and request.url.path == "/api/tickets/101":
+        put_requests.append(json.loads(request.content))
+        return httpx.Response(200, json={"id": 101})
     if request.method == "POST" and request.url.path == "/api/tickets/101/messages":
         posted_messages.append(json.loads(request.content))
         return httpx.Response(201, json={"id": 999})
@@ -71,6 +84,7 @@ def _patch_client(monkeypatch):
     monkeypatch.setenv("GORGIAS_API_KEY", "test-key")
     monkeypatch.setattr(gorgias_client, "_client", fake_client)
     posted_messages.clear()
+    put_requests.clear()
 
 
 def test_maps_customer_authored_message_into_ticket():
@@ -103,3 +117,31 @@ def test_post_internal_note_strips_gor_prefix_and_sends_expected_body():
 def test_post_internal_note_raises_on_error_response():
     with pytest.raises(httpx.HTTPStatusError):
         post_internal_note("GOR-999", "irrelevant")
+
+
+def test_update_ticket_flags_merges_without_clobbering_existing_tags():
+    update_ticket_flags("GOR-101", tags=["ai-flagged"], priority="high")
+
+    assert len(put_requests) == 1
+    body = put_requests[0]
+    names = {t["name"] for t in body["tags"]}
+    assert names == {"ORDER-STATUS", "ai-flagged"}  # existing tag preserved, new one added
+    assert body["priority"] == "high"
+
+
+def test_update_ticket_flags_skips_duplicate_tag():
+    update_ticket_flags("GOR-101", tags=["ORDER-STATUS"])  # already present
+
+    body = put_requests[0]
+    assert [t["name"] for t in body["tags"]].count("ORDER-STATUS") == 1
+
+
+def test_update_ticket_flags_omits_priority_when_not_given():
+    update_ticket_flags("GOR-101", tags=["ai-flagged"])
+
+    assert "priority" not in put_requests[0]
+
+
+def test_update_ticket_flags_raises_on_error_response():
+    with pytest.raises(httpx.HTTPStatusError):
+        update_ticket_flags("GOR-888", tags=["ai-flagged"])

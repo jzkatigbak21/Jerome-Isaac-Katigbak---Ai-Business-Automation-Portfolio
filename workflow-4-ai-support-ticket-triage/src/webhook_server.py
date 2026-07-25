@@ -25,7 +25,13 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Header, HTTPException, Request
 
 from .triage.client import TriageClient
-from .triage.gorgias_client import fetch_single_ticket, format_triage_note, post_internal_note
+from .triage.gorgias_client import (
+    fetch_single_ticket,
+    format_triage_note,
+    post_internal_note,
+    update_ticket_flags,
+)
+from .triage.notifications import notify_slack
 from .triage.pipeline import process_one
 
 load_dotenv()
@@ -97,6 +103,32 @@ def _append_result(result) -> None:
         ])
 
 
+def _surface_flagged_ticket(ticket, result) -> None:
+    """A flagged ticket that only exists as an internal note is easy to
+    miss -- tag it so it surfaces in a saved Gorgias view, and for the
+    genuinely urgent ones (high urgency, not just "needs a human"), bump
+    priority and ping Slack rather than relying on someone happening to
+    check that view.
+    """
+    is_urgent = result.urgency == "high"
+    tags = ["ai-flagged"]
+    priority = "high" if is_urgent else None
+
+    try:
+        update_ticket_flags(result.ticket_id, tags=tags, priority=priority)
+    except Exception:
+        logger.exception("Failed to tag/prioritize %s", result.ticket_id)
+
+    if is_urgent:
+        try:
+            notify_slack(
+                f"[URGENT] Ticket {result.ticket_id} ({ticket.customer_name}) flagged "
+                f"for human review -- {result.category}. Reason: {result.review_reason}"
+            )
+        except Exception:
+            logger.exception("Failed to send Slack notification for %s", result.ticket_id)
+
+
 @app.post("/webhook/gorgias")
 async def gorgias_webhook(request: Request, x_webhook_secret: str | None = Header(default=None)):
     expected_secret = os.environ.get("WEBHOOK_SECRET")
@@ -134,6 +166,9 @@ async def gorgias_webhook(request: Request, x_webhook_secret: str | None = Heade
         # don't fail the whole webhook response just because Gorgias
         # rejected the note write (e.g. a transient error on their side).
         logger.exception("Failed to post internal note for %s", result.ticket_id)
+
+    if result.needs_human_review:
+        _surface_flagged_ticket(ticket, result)
 
     return {"status": "processed", "ticket_id": ticket.ticket_id, "outcome": outcome}
 

@@ -147,6 +147,16 @@ mentioning an allergic reaction to a product got flagged for human
 review -- the same behavior `pipeline.py`'s `ESCALATION_KEYWORDS` check
 was written to guarantee, now confirmed end-to-end, not just in mocks.
 
+**Making flagged tickets visible, not just flagged:** a note nobody's
+looking for does nothing. Every flagged ticket gets tagged `ai-flagged`
+(merged into its existing tags via `update_ticket_flags()`, never
+clobbering what other automations already set) so it surfaces in a saved
+Gorgias view. The genuinely urgent ones -- high urgency *and* flagged,
+the chargeback-threat ticket is the textbook case -- additionally get
+their priority bumped to `high` and an optional Slack ping
+(`SLACK_WEBHOOK_URL`, a no-op if unset) instead of relying on someone
+happening to check that view.
+
 Tickets that predate the webhook (created via the CSV/`--source gorgias`
 path, or before the note-posting code existed) never got this note --
 the webhook only fires on the one-time "ticket created" event, so it

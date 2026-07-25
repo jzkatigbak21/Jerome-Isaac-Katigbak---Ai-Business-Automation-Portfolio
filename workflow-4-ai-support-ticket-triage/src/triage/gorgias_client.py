@@ -40,6 +40,18 @@ def _first_customer_message(client: httpx.Client, ticket_id: int) -> dict | None
     return None
 
 
+def _raise_verbose(response: httpx.Response, action: str, raw_id: str) -> None:
+    """response.raise_for_status() alone drops the response body -- Gorgias
+    puts the actual validation error there (e.g. which field was missing),
+    which is what actually makes a 400 fast to diagnose."""
+    if response.status_code >= 400:
+        raise httpx.HTTPStatusError(
+            f"{response.status_code} error {action} ticket {raw_id}: {response.text}",
+            request=response.request,
+            response=response,
+        )
+
+
 def _map_ticket(client: httpx.Client, raw: dict) -> Ticket | None:
     """Shared by fetch_tickets() (batch) and fetch_single_ticket() (webhook)
     so both entry points build a Ticket the same way."""
@@ -112,9 +124,29 @@ def post_internal_note(mapped_ticket_id: str, text: str) -> None:
                 "body_text": text,
             },
         )
-        if response.status_code >= 400:
-            raise httpx.HTTPStatusError(
-                f"{response.status_code} error posting note for ticket {raw_id}: {response.text}",
-                request=response.request,
-                response=response,
-            )
+        _raise_verbose(response, "posting note for", raw_id)
+
+
+def update_ticket_flags(mapped_ticket_id: str, tags: list[str], priority: str | None = None) -> None:
+    """Tag (and optionally bump the priority of) a ticket so a flagged item
+    surfaces in views/queues agents already watch -- an internal note alone
+    does nothing if no one is looking at that specific ticket.
+
+    Gorgias's ticket-update endpoint replaces the tags list wholesale, so
+    fetch the ticket's current tags first and merge rather than clobbering
+    whatever other automations or agents already tagged it with.
+    """
+    raw_id = mapped_ticket_id.removeprefix("GOR-")
+    with _client() as client:
+        current = client.get(f"/tickets/{raw_id}")
+        current.raise_for_status()
+        existing_tags = current.json().get("tags", [])
+        existing_names = {t["name"] for t in existing_tags}
+        merged_tags = existing_tags + [{"name": name} for name in tags if name not in existing_names]
+
+        payload: dict = {"tags": merged_tags}
+        if priority is not None:
+            payload["priority"] = priority
+
+        response = client.put(f"/tickets/{raw_id}", json=payload)
+        _raise_verbose(response, "updating", raw_id)
