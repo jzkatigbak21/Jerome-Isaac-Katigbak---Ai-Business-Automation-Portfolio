@@ -96,6 +96,7 @@ def test_post_internal_note_strips_gor_prefix_and_sends_expected_body():
     body = posted_messages[0]
     assert body["channel"] == "internal-note"
     assert body["from_agent"] is True
+    assert body["sender"] == {"email": "agent@example.com"}  # matches the fixture's GORGIAS_EMAIL
     assert "category=defect" in body["body_text"]
 
 

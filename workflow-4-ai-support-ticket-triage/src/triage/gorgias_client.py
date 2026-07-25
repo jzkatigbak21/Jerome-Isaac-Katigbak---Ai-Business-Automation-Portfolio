@@ -108,7 +108,13 @@ def post_internal_note(mapped_ticket_id: str, text: str) -> None:
                 "channel": "internal-note",
                 "via": "internal-note",
                 "from_agent": True,
+                "sender": {"email": os.environ["GORGIAS_EMAIL"]},
                 "body_text": text,
             },
         )
-        response.raise_for_status()
+        if response.status_code >= 400:
+            raise httpx.HTTPStatusError(
+                f"{response.status_code} error posting note for ticket {raw_id}: {response.text}",
+                request=response.request,
+                response=response,
+            )
