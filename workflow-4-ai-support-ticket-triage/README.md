@@ -234,10 +234,23 @@ _Live run against the first 20 tickets of the synthetic dataset
 
 Category breakdown: shipping=5, account=4, praise=4, defect=3, refund=2, other=1, question=1.
 
-The full 300-row batch behaves the same way, just longer and slightly
-pricier to run -- see [`architecture.md`](architecture.md) for how the
-pipeline handles that volume (bounded concurrency, retries, failure
-isolation).
+_Full 300-row batch, no `--limit`, via `claude-sonnet-5`:_
+
+| Metric | Value |
+|---|---|
+| Tickets processed | 300/300 |
+| Auto-drafted replies | 195 |
+| Flagged for human review | 105 |
+| Failures after retries | 0 |
+
+Category breakdown: shipping=65, defect=63, praise=59, account=46, refund=39, other=15, question=13.
+
+Same behavior as the 20-row smoke test, just at volume -- see
+[`architecture.md`](architecture.md) for how the pipeline handles that
+volume (bounded concurrency, retries, failure isolation). Estimated
+cost for a run this size is roughly $1-3 on `claude-sonnet-5` pricing --
+cheap enough to smoke-test with `--limit` first and run the full batch
+without worrying about it.
 
 ### Live run against a real Gorgias account
 
@@ -265,10 +278,11 @@ Two results worth calling out:
   inquiry and flagged it for a human to dismiss, rather than hallucinating
   a customer-service reply to a system message.
 
-**[dashboard.html](dashboard.html)** renders both runs as an interactive
-console with a toggle between the synthetic dataset and this live Gorgias
-run -- click through each ticket to see the original message, Claude's
-classification, and either the drafted reply or the human-review reason.
+**[dashboard.html](dashboard.html)** renders all three runs as an
+interactive console with a tab toggle -- the 20-row smoke test, the full
+300-row batch, and this live Gorgias run -- click through each ticket to
+see the original message, Claude's classification, and either the
+drafted reply or the human-review reason.
 
 ## Key Skills Demonstrated
 
