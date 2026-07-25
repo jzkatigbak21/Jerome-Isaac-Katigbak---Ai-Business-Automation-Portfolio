@@ -141,6 +141,12 @@ already work, instead of needing to go check a CSV. A note-write failure
 is logged but never breaks the webhook response -- the classification is
 already saved regardless.
 
+The safety-net keyword override (until this point only exercised by unit
+tests) also fired correctly against a real ticket: a live email
+mentioning an allergic reaction to a product got flagged for human
+review -- the same behavior `pipeline.py`'s `ESCALATION_KEYWORDS` check
+was written to guarantee, now confirmed end-to-end, not just in mocks.
+
 Tickets that predate the webhook (created via the CSV/`--source gorgias`
 path, or before the note-posting code existed) never got this note --
 the webhook only fires on the one-time "ticket created" event, so it
