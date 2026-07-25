@@ -80,6 +80,16 @@ def fetch_single_ticket(ticket_id: str) -> Ticket | None:
         return _map_ticket(client, response.json())
 
 
+def format_triage_note(result) -> str:
+    """Shared by the webhook (per-ticket, real-time) and the backfill script
+    (batch, one-off) so a note looks the same regardless of which path
+    produced it."""
+    header = f"[AI Triage] category={result.category} urgency={result.urgency} confidence={result.confidence:.0%}"
+    if result.draft_reply:
+        return f"{header}\n\nSuggested reply (review before sending):\n\n{result.draft_reply}"
+    return f"{header} -- FLAGGED FOR HUMAN REVIEW\n\nReason: {result.review_reason}"
+
+
 def post_internal_note(mapped_ticket_id: str, text: str) -> None:
     """Write the AI's triage result back onto the ticket as an internal
     note -- visible to agents in their normal Gorgias view, never sent to

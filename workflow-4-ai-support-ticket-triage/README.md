@@ -141,6 +141,19 @@ already work, instead of needing to go check a CSV. A note-write failure
 is logged but never breaks the webhook response -- the classification is
 already saved regardless.
 
+Tickets that predate the webhook (created via the CSV/`--source gorgias`
+path, or before the note-posting code existed) never got this note --
+the webhook only fires on the one-time "ticket created" event, so it
+can't retroactively touch old tickets. `scripts/backfill_notes.py`
+covers that gap: it re-fetches existing tickets, classifies each, and
+posts the same note format. Not idempotent -- it reclassifies (a fresh
+Claude call) and posts a fresh note every run, so it's meant to be run
+once, not on a schedule:
+
+```bash
+python scripts/backfill_notes.py
+```
+
 **Idempotency:** webhooks are at-least-once, not exactly-once -- if Gorgias
 doesn't get a 2xx back fast enough, it retries the same delivery, which
 would otherwise reclassify (and double-bill Claude for) a ticket already
