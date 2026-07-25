@@ -25,7 +25,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Header, HTTPException, Request
 
 from .triage.client import TriageClient
-from .triage.gorgias_client import fetch_single_ticket
+from .triage.gorgias_client import fetch_single_ticket, post_internal_note
 from .triage.pipeline import process_one
 
 load_dotenv()
@@ -81,6 +81,13 @@ def _already_processed(ticket_id: str) -> bool:
         return any(row.get("ticket_id") == mapped_id for row in csv.DictReader(f))
 
 
+def _format_note(result) -> str:
+    header = f"[AI Triage] category={result.category} urgency={result.urgency} confidence={result.confidence:.0%}"
+    if result.draft_reply:
+        return f"{header}\n\nSuggested reply (review before sending):\n\n{result.draft_reply}"
+    return f"{header} -- FLAGGED FOR HUMAN REVIEW\n\nReason: {result.review_reason}"
+
+
 def _append_result(result) -> None:
     LIVE_RESULTS_PATH.parent.mkdir(parents=True, exist_ok=True)
     is_new = not LIVE_RESULTS_PATH.exists()
@@ -126,6 +133,14 @@ async def gorgias_webhook(request: Request, x_webhook_secret: str | None = Heade
         "Ticket %s (%s) -> %s [%s/%s]",
         ticket.ticket_id, ticket.customer_name, outcome, result.category, result.urgency,
     )
+
+    try:
+        post_internal_note(result.ticket_id, _format_note(result))
+    except Exception:
+        # The classification itself already succeeded and is logged --
+        # don't fail the whole webhook response just because Gorgias
+        # rejected the note write (e.g. a transient error on their side).
+        logger.exception("Failed to post internal note for %s", result.ticket_id)
 
     return {"status": "processed", "ticket_id": ticket.ticket_id, "outcome": outcome}
 

@@ -53,7 +53,8 @@ def test_webhook_processes_ticket_and_logs_result():
     ticket = Ticket("GOR-1", "Jane Doe", "email", "Does this ship internationally?")
 
     with patch("src.webhook_server.fetch_single_ticket", return_value=ticket), \
-         patch("src.webhook_server.process_one", return_value=_fake_result()):
+         patch("src.webhook_server.process_one", return_value=_fake_result()), \
+         patch("src.webhook_server.post_internal_note") as mock_note:
         client = TestClient(app)
         response = client.post("/webhook/gorgias", json={"ticket_id": "1"})
 
@@ -65,6 +66,43 @@ def test_webhook_processes_ticket_and_logs_result():
     from pathlib import Path
     log = Path("out/live_results.csv").read_text()
     assert "GOR-1" in log
+
+    # The AI's result is written back onto the ticket as an internal note,
+    # so an agent sees it in their normal Gorgias view.
+    mock_note.assert_called_once()
+    note_ticket_id, note_text = mock_note.call_args[0]
+    assert note_ticket_id == "GOR-1"
+    assert "Hi! -- The Support Team" in note_text
+
+
+def test_webhook_flagged_ticket_note_includes_review_reason():
+    ticket = Ticket("GOR-4", "Jane Doe", "email", "This is unacceptable, third time contacting.")
+
+    with patch("src.webhook_server.fetch_single_ticket", return_value=ticket), \
+         patch("src.webhook_server.process_one", return_value=_fake_result(ticket_id="GOR-4", needs_human_review=True)), \
+         patch("src.webhook_server.post_internal_note") as mock_note:
+        client = TestClient(app)
+        response = client.post("/webhook/gorgias", json={"ticket_id": "4"})
+
+    assert response.json()["outcome"] == "flagged for review"
+    note_text = mock_note.call_args[0][1]
+    assert "FLAGGED FOR HUMAN REVIEW" in note_text
+    assert "needs a human" in note_text
+
+
+def test_webhook_note_post_failure_does_not_break_response():
+    """A rejected/failed note write shouldn't take down an otherwise
+    successful classification -- the result is already logged."""
+    ticket = Ticket("GOR-5", "Jane Doe", "email", "Hello")
+
+    with patch("src.webhook_server.fetch_single_ticket", return_value=ticket), \
+         patch("src.webhook_server.process_one", return_value=_fake_result(ticket_id="GOR-5")), \
+         patch("src.webhook_server.post_internal_note", side_effect=RuntimeError("Gorgias 500")):
+        client = TestClient(app)
+        response = client.post("/webhook/gorgias", json={"ticket_id": "5"})
+
+    assert response.status_code == 200
+    assert response.json()["status"] == "processed"
 
 
 def test_webhook_skips_ticket_with_no_customer_message():
@@ -104,7 +142,8 @@ def test_webhook_deduplicates_retried_delivery():
     ticket = Ticket("GOR-3", "Jane Doe", "email", "Where's my order?")
 
     with patch("src.webhook_server.fetch_single_ticket", return_value=ticket) as mock_fetch, \
-         patch("src.webhook_server.process_one", return_value=_fake_result(ticket_id="GOR-3")) as mock_process:
+         patch("src.webhook_server.process_one", return_value=_fake_result(ticket_id="GOR-3")) as mock_process, \
+         patch("src.webhook_server.post_internal_note"):
         client = TestClient(app)
 
         first = client.post("/webhook/gorgias", json={"ticket_id": "3"})
@@ -126,7 +165,8 @@ def test_webhook_accepts_correct_secret():
 
     with patch.dict("os.environ", {"WEBHOOK_SECRET": "correct-secret"}), \
          patch("src.webhook_server.fetch_single_ticket", return_value=ticket), \
-         patch("src.webhook_server.process_one", return_value=_fake_result()):
+         patch("src.webhook_server.process_one", return_value=_fake_result()), \
+         patch("src.webhook_server.post_internal_note"):
         client = TestClient(app)
         response = client.post(
             "/webhook/gorgias",

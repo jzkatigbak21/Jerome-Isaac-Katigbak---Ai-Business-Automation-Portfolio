@@ -78,3 +78,27 @@ def fetch_single_ticket(ticket_id: str) -> Ticket | None:
         response = client.get(f"/tickets/{ticket_id}")
         response.raise_for_status()
         return _map_ticket(client, response.json())
+
+
+def post_internal_note(mapped_ticket_id: str, text: str) -> None:
+    """Write the AI's triage result back onto the ticket as an internal
+    note -- visible to agents in their normal Gorgias view, never sent to
+    the customer. This is the human-in-the-loop handoff: an agent reviews
+    and sends it themselves rather than the system auto-sending.
+
+    mapped_ticket_id is our "GOR-<id>" form (Ticket.ticket_id /
+    TriageResult.ticket_id) -- strip the prefix to get the raw Gorgias id
+    the API expects in the URL.
+    """
+    raw_id = mapped_ticket_id.removeprefix("GOR-")
+    with _client() as client:
+        response = client.post(
+            f"/tickets/{raw_id}/messages",
+            json={
+                "channel": "internal-note",
+                "via": "internal-note",
+                "from_agent": True,
+                "body_text": text,
+            },
+        )
+        response.raise_for_status()

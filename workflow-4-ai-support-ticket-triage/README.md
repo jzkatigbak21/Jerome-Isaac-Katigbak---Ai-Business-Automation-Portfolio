@@ -133,6 +133,14 @@ Ticket GOR-74619543 (Francesca Thea Isabella Mejos) -> flagged for review [other
 INFO:     34.6.16.210:0 - "POST /webhook/gorgias HTTP/1.1" 200 OK
 ```
 
+**Closing the loop:** the receiver also writes the result back onto the
+ticket as a Gorgias internal note (`POST /tickets/{id}/messages`) -- an
+agent opens the ticket and sees "[AI Triage] category=... urgency=..."
+plus either the suggested reply or the flagged reason, right where they
+already work, instead of needing to go check a CSV. A note-write failure
+is logged but never breaks the webhook response -- the classification is
+already saved regardless.
+
 **Idempotency:** webhooks are at-least-once, not exactly-once -- if Gorgias
 doesn't get a 2xx back fast enough, it retries the same delivery, which
 would otherwise reclassify (and double-bill Claude for) a ticket already
