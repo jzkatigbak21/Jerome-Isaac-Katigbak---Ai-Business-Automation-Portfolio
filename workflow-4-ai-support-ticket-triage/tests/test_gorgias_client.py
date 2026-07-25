@@ -7,11 +7,18 @@ Uses httpx.MockTransport to fake the two endpoints the client calls
 from __future__ import annotations
 
 import json
+from unittest.mock import patch
 
 import httpx
 import pytest
 
-from src.triage.gorgias_client import fetch_tickets, post_internal_note, update_ticket_flags
+from src.triage.gorgias_client import (
+    fetch_tickets,
+    post_internal_note,
+    surface_flagged_ticket,
+    update_ticket_flags,
+)
+from src.triage.schema import Entities, TriageResult
 
 TICKETS_PAGE = {
     "data": [
@@ -145,3 +152,55 @@ def test_update_ticket_flags_omits_priority_when_not_given():
 def test_update_ticket_flags_raises_on_error_response():
     with pytest.raises(httpx.HTTPStatusError):
         update_ticket_flags("GOR-888", tags=["ai-flagged"])
+
+
+def _make_result(**overrides) -> TriageResult:
+    defaults = dict(
+        ticket_id="GOR-101",
+        sentiment="negative",
+        urgency="medium",
+        category="account",
+        entities=Entities(order_number=None, product_name=None),
+        issue_summary="Customer needs help.",
+        confidence=0.8,
+        needs_human_review=True,
+        review_reason="needs a human",
+        draft_reply=None,
+    )
+    defaults.update(overrides)
+    return TriageResult(**defaults)
+
+
+def test_surface_flagged_ticket_is_noop_when_not_flagged():
+    result = _make_result(needs_human_review=True, draft_reply=None)
+    result = result.model_copy(update={"needs_human_review": False, "draft_reply": "Hi!"})
+
+    with patch("src.triage.gorgias_client.notify_slack") as mock_slack:
+        surface_flagged_ticket("Jane Doe", result)
+
+    assert put_requests == []  # update_ticket_flags never called
+    mock_slack.assert_not_called()
+
+
+def test_surface_flagged_ticket_tags_only_when_not_urgent():
+    result = _make_result(urgency="medium")
+
+    with patch("src.triage.gorgias_client.notify_slack") as mock_slack:
+        surface_flagged_ticket("Jane Doe", result)
+
+    assert len(put_requests) == 1
+    assert "ai-flagged" in {t["name"] for t in put_requests[0]["tags"]}
+    assert "priority" not in put_requests[0]
+    mock_slack.assert_not_called()
+
+
+def test_surface_flagged_ticket_bumps_priority_and_notifies_when_urgent():
+    result = _make_result(urgency="high", category="other", review_reason="chargeback threat")
+
+    with patch("src.triage.gorgias_client.notify_slack") as mock_slack:
+        surface_flagged_ticket("Jane Doe", result)
+
+    assert put_requests[0]["priority"] == "high"
+    mock_slack.assert_called_once()
+    message = mock_slack.call_args[0][0]
+    assert "GOR-101" in message and "Jane Doe" in message and "chargeback threat" in message

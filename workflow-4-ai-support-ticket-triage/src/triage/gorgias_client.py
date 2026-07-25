@@ -10,6 +10,7 @@ import os
 import httpx
 
 from .io_utils import Ticket
+from .notifications import notify_slack
 
 GORGIAS_TIMEOUT_SECONDS = 15.0
 
@@ -150,3 +151,27 @@ def update_ticket_flags(mapped_ticket_id: str, tags: list[str], priority: str | 
 
         response = client.put(f"/tickets/{raw_id}", json=payload)
         _raise_verbose(response, "updating", raw_id)
+
+
+def surface_flagged_ticket(customer_name: str, result) -> None:
+    """The single source of truth for "what happens to a flagged ticket" --
+    shared by the webhook (real-time) and the backfill script (one-off
+    batch) so old and new tickets get identical treatment. No-op if the
+    result wasn't flagged.
+
+    Every flagged ticket gets tagged so it surfaces in a saved Gorgias
+    view. The genuinely urgent ones (high urgency, not just "needs a
+    human") additionally get priority bumped and an optional Slack ping,
+    rather than relying on someone happening to check that view.
+    """
+    if not result.needs_human_review:
+        return
+
+    is_urgent = result.urgency == "high"
+    update_ticket_flags(result.ticket_id, tags=["ai-flagged"], priority="high" if is_urgent else None)
+
+    if is_urgent:
+        notify_slack(
+            f"[URGENT] Ticket {result.ticket_id} ({customer_name}) flagged for human review "
+            f"-- {result.category}. Reason: {result.review_reason}"
+        )

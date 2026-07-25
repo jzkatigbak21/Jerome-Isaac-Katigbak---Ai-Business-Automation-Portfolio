@@ -81,8 +81,7 @@ def test_webhook_flagged_ticket_note_includes_review_reason():
     with patch("src.webhook_server.fetch_single_ticket", return_value=ticket), \
          patch("src.webhook_server.process_one", return_value=_fake_result(ticket_id="GOR-4", needs_human_review=True)), \
          patch("src.webhook_server.post_internal_note") as mock_note, \
-         patch("src.webhook_server.update_ticket_flags"), \
-         patch("src.webhook_server.notify_slack"):
+         patch("src.webhook_server.surface_flagged_ticket"):
         client = TestClient(app)
         response = client.post("/webhook/gorgias", json={"ticket_id": "4"})
 
@@ -92,58 +91,39 @@ def test_webhook_flagged_ticket_note_includes_review_reason():
     assert "needs a human" in note_text
 
 
-def test_webhook_tags_flagged_ticket_without_bumping_priority_when_not_urgent():
-    """Every flagged ticket gets tagged so it surfaces in a saved view --
-    but priority is only bumped and Slack pinged for the genuinely urgent
-    ones, not every flag."""
-    ticket = Ticket("GOR-6", "Jane Doe", "email", "Can you clarify the return policy?")
-
-    with patch("src.webhook_server.fetch_single_ticket", return_value=ticket), \
-         patch("src.webhook_server.process_one",
-               return_value=_fake_result(ticket_id="GOR-6", needs_human_review=True, urgency="medium")), \
-         patch("src.webhook_server.post_internal_note"), \
-         patch("src.webhook_server.update_ticket_flags") as mock_flags, \
-         patch("src.webhook_server.notify_slack") as mock_slack:
-        client = TestClient(app)
-        client.post("/webhook/gorgias", json={"ticket_id": "6"})
-
-    mock_flags.assert_called_once_with("GOR-6", tags=["ai-flagged"], priority=None)
-    mock_slack.assert_not_called()
-
-
-def test_webhook_bumps_priority_and_notifies_slack_for_urgent_flagged_ticket():
+def test_webhook_calls_surface_flagged_ticket_with_customer_name_and_result():
+    """The tag/priority/Slack policy itself is covered at the gorgias_client
+    level (test_gorgias_client.py) -- here we only need to confirm the
+    webhook wires the right arguments through to the shared function."""
     ticket = Ticket("GOR-7", "Jane Doe", "email", "Third time emailing, disputing the charge.")
+    fake = _fake_result(ticket_id="GOR-7", needs_human_review=True, urgency="high")
 
     with patch("src.webhook_server.fetch_single_ticket", return_value=ticket), \
-         patch("src.webhook_server.process_one",
-               return_value=_fake_result(ticket_id="GOR-7", needs_human_review=True, urgency="high")), \
+         patch("src.webhook_server.process_one", return_value=fake), \
          patch("src.webhook_server.post_internal_note"), \
-         patch("src.webhook_server.update_ticket_flags") as mock_flags, \
-         patch("src.webhook_server.notify_slack") as mock_slack:
+         patch("src.webhook_server.surface_flagged_ticket") as mock_surface:
         client = TestClient(app)
         client.post("/webhook/gorgias", json={"ticket_id": "7"})
 
-    mock_flags.assert_called_once_with("GOR-7", tags=["ai-flagged"], priority="high")
-    mock_slack.assert_called_once()
-    assert "GOR-7" in mock_slack.call_args[0][0]
-    assert "URGENT" in mock_slack.call_args[0][0]
+    mock_surface.assert_called_once_with("Jane Doe", fake)
 
 
-def test_webhook_does_not_tag_or_notify_for_auto_drafted_ticket():
-    """An auto-drafted (not flagged) ticket needs neither a tag nor a
-    Slack ping -- there's nothing for a human to be surfaced to."""
-    ticket = Ticket("GOR-8", "Jane Doe", "email", "Loved it, thanks!")
+def test_webhook_surface_flagged_failure_does_not_break_response():
+    """Same reasoning as the note-write failure -- a Gorgias-side error
+    tagging/prioritizing/notifying shouldn't take down an otherwise
+    successful classification that's already logged."""
+    ticket = Ticket("GOR-9", "Jane Doe", "email", "Third time emailing, disputing the charge.")
 
     with patch("src.webhook_server.fetch_single_ticket", return_value=ticket), \
-         patch("src.webhook_server.process_one", return_value=_fake_result(ticket_id="GOR-8", urgency="high")), \
+         patch("src.webhook_server.process_one",
+               return_value=_fake_result(ticket_id="GOR-9", needs_human_review=True, urgency="high")), \
          patch("src.webhook_server.post_internal_note"), \
-         patch("src.webhook_server.update_ticket_flags") as mock_flags, \
-         patch("src.webhook_server.notify_slack") as mock_slack:
+         patch("src.webhook_server.surface_flagged_ticket", side_effect=RuntimeError("Gorgias 500")):
         client = TestClient(app)
-        client.post("/webhook/gorgias", json={"ticket_id": "8"})
+        response = client.post("/webhook/gorgias", json={"ticket_id": "9"})
 
-    mock_flags.assert_not_called()
-    mock_slack.assert_not_called()
+    assert response.status_code == 200
+    assert response.json()["status"] == "processed"
 
 
 def test_webhook_note_post_failure_does_not_break_response():

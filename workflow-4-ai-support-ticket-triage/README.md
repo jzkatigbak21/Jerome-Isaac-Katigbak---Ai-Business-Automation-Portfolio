@@ -158,13 +158,15 @@ their priority bumped to `high` and an optional Slack ping
 happening to check that view.
 
 Tickets that predate the webhook (created via the CSV/`--source gorgias`
-path, or before the note-posting code existed) never got this note --
-the webhook only fires on the one-time "ticket created" event, so it
-can't retroactively touch old tickets. `scripts/backfill_notes.py`
+path, or before this code existed) never got a note, tag, priority bump,
+or Slack ping -- the webhook only fires on the one-time "ticket created"
+event, so it can't retroactively touch old tickets. `scripts/backfill_notes.py`
 covers that gap: it re-fetches existing tickets, classifies each, and
-posts the same note format. Not idempotent -- it reclassifies (a fresh
-Claude call) and posts a fresh note every run, so it's meant to be run
-once, not on a schedule:
+applies the exact same `format_triage_note()` / `surface_flagged_ticket()`
+treatment the webhook would have -- both paths share the same functions,
+so old and new tickets end up identically handled. Not idempotent -- it
+reclassifies (a fresh Claude call) and re-applies everything fresh every
+run, so it's meant to be run once, not on a schedule:
 
 ```bash
 python scripts/backfill_notes.py
