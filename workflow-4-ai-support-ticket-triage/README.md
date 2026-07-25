@@ -165,6 +165,11 @@ their priority bumped to `high` and an optional Slack ping
 (`SLACK_WEBHOOK_URL`, a no-op if unset) instead of relying on someone
 happening to check that view.
 
+**Verified live:** a real chargeback-threat test ticket sent through the
+webhook came out flagged `other/high`, got its Gorgias priority bumped to
+`high`, and posted a Slack message to the configured channel within
+seconds -- no polling, no manual queue-checking.
+
 Tickets that predate the webhook (created via the CSV/`--source gorgias`
 path, or before this code existed) never got a note, tag, priority bump,
 or Slack ping -- the webhook only fires on the one-time "ticket created"
@@ -191,6 +196,19 @@ handled. The receiver dedupes on `ticket_id` against `live_results.csv`
 before doing any of the expensive work, so a retried delivery is a no-op.
 
 Each processed ticket lands in `out/live_results.csv`.
+
+**From local dev to production:** `uvicorn` in a terminal plus `ngrok` is
+strictly a dev/testing setup -- it depends on a laptop staying awake and
+a tunnel URL that changes every restart, and Gorgias needs a stable
+HTTPS endpoint that's actually up when a ticket arrives at 3am. A real
+DTC brand would deploy this as either an always-on container (Railway,
+Render, Fly.io -- push the code, get a permanent HTTPS domain, automatic
+restarts, secrets managed in a dashboard instead of a local `.env`) or as
+a serverless function (AWS Lambda via `Mangum`, Cloud Run, Vercel --
+a natural fit since a webhook receiver is spiky and stateless: no
+ticket, no invocation, no cost). Either path also swaps the `print`/log
+statements here for something like CloudWatch, Datadog, or Sentry, since
+nobody's watching a terminal window when the pager-worthy ticket comes in.
 
 ## Tests
 
