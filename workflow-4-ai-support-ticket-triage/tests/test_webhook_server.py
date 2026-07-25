@@ -34,9 +34,9 @@ def test_extract_ticket_id_accepts_common_payload_shapes(payload, expected):
     assert _extract_ticket_id(payload) == expected
 
 
-def _fake_result(needs_human_review=False, draft_reply="Hi! -- The Support Team"):
+def _fake_result(ticket_id="GOR-1", needs_human_review=False, draft_reply="Hi! -- The Support Team"):
     return TriageResult(
-        ticket_id="GOR-1",
+        ticket_id=ticket_id,
         sentiment="neutral",
         urgency="low",
         category="question",
@@ -95,6 +95,30 @@ def test_webhook_rejects_bad_secret(monkeypatch):
     )
 
     assert response.status_code == 401
+
+
+def test_webhook_deduplicates_retried_delivery():
+    """Simulates Gorgias retrying a delivery for a ticket already processed
+    -- the second call must not re-fetch or re-classify (which would
+    double-bill Claude and could double-post a reply)."""
+    ticket = Ticket("GOR-3", "Jane Doe", "email", "Where's my order?")
+
+    with patch("src.webhook_server.fetch_single_ticket", return_value=ticket) as mock_fetch, \
+         patch("src.webhook_server.process_one", return_value=_fake_result(ticket_id="GOR-3")) as mock_process:
+        client = TestClient(app)
+
+        first = client.post("/webhook/gorgias", json={"ticket_id": "3"})
+        second = client.post("/webhook/gorgias", json={"ticket_id": "3"})
+
+    assert first.json()["status"] == "processed"
+    assert second.status_code == 200
+    assert second.json()["status"] == "duplicate"
+    assert mock_fetch.call_count == 1
+    assert mock_process.call_count == 1
+
+    from pathlib import Path
+    log = Path("out/live_results.csv").read_text()
+    assert log.count("GOR-3") == 1
 
 
 def test_webhook_accepts_correct_secret():

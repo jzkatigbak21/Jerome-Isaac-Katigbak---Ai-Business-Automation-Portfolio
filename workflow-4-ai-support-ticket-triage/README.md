@@ -109,21 +109,37 @@ uvicorn src.webhook_server:app --reload --port 8000
 ngrok http 8000
 ```
 
-Then in Gorgias, create an **Automation**: trigger "when a ticket is
-created," action "call a webhook" pointing at
-`https://<your-ngrok-id>.ngrok-free.app/webhook/gorgias`, with a JSON body
-containing the ticket ID (Gorgias's automation builder shows the available
-merge tags -- something like `{"ticket_id": "{{ ticket.id }}"}`). The
-receiver defensively accepts a few common payload shapes (`ticket_id`,
-`id`, `ticket.id`, `data.id`) since exactly what gets sent depends on how
-the automation is configured.
-
-Each processed ticket is logged to `out/live_results.csv` and printed to
-the console as it happens -- e.g. `Ticket GOR-74592144 (Francesca Mejos) ->
-flagged for review [other/high]`. Set `WEBHOOK_SECRET` in `.env` to require
-a shared-secret header on incoming requests (Gorgias's webhook action lets
-you add custom headers) -- otherwise the endpoint accepts unauthenticated
+Then in Gorgias, go to **Settings -> HTTP integration** (not the Rules/
+Automations action list -- outbound webhooks live in their own settings
+page) and enable it for the **Ticket created** event: URL
+`https://<your-ngrok-id>.ngrok-free.app/webhook/gorgias`, method `POST`,
+content type `application/json`, and a JSON body of
+`{"ticket_id": "{{ticket.id}}"}` (Gorgias pre-fills this exact template).
+The receiver defensively accepts a few common payload shapes (`ticket_id`,
+`id`, `ticket.id`, `data.id`) in case that default ever changes. Add a
+header `ngrok-skip-browser-warning: true` to skip ngrok's free-tier
+interstitial page, and set `WEBHOOK_SECRET` in `.env` (plus a matching
+`X-Webhook-Secret` header in Gorgias) to require a shared secret on
+incoming requests -- otherwise the endpoint accepts unauthenticated
 requests, fine for a local demo, not for anything exposed longer-term.
+
+**Verified live end-to-end:** with the receiver running and a Gorgias HTTP
+integration pointed at it, creating a ticket in Gorgias triggered the full
+chain -- webhook fired, ticket + messages fetched from the Gorgias API,
+classified by Claude, and logged -- in about 5 seconds with no polling:
+
+```
+Ticket GOR-74619543 (Francesca Thea Isabella Mejos) -> flagged for review [other/high]
+INFO:     34.6.16.210:0 - "POST /webhook/gorgias HTTP/1.1" 200 OK
+```
+
+**Idempotency:** webhooks are at-least-once, not exactly-once -- if Gorgias
+doesn't get a 2xx back fast enough, it retries the same delivery, which
+would otherwise reclassify (and double-bill Claude for) a ticket already
+handled. The receiver dedupes on `ticket_id` against `live_results.csv`
+before doing any of the expensive work, so a retried delivery is a no-op.
+
+Each processed ticket lands in `out/live_results.csv`.
 
 ## Tests
 

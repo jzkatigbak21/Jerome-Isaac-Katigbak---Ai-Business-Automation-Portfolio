@@ -63,6 +63,24 @@ def _extract_ticket_id(payload: dict) -> str | None:
     return None
 
 
+def _already_processed(ticket_id: str) -> bool:
+    """Webhooks are at-least-once, not exactly-once -- Gorgias retries a
+    delivery if it doesn't get a fast enough 2xx back, which can replay a
+    ticket we already finished (and already billed a Claude call for).
+    Cheap dedup: has this ticket's mapped id already been logged?
+
+    Not concurrency-safe against two near-simultaneous deliveries for the
+    same ticket racing each other (that would need a lock or a DB unique
+    constraint) -- fine for the retry-after-timeout case this guards
+    against, which is the common one.
+    """
+    if not LIVE_RESULTS_PATH.exists():
+        return False
+    mapped_id = f"GOR-{ticket_id}"
+    with LIVE_RESULTS_PATH.open(newline="", encoding="utf-8") as f:
+        return any(row.get("ticket_id") == mapped_id for row in csv.DictReader(f))
+
+
 def _append_result(result) -> None:
     LIVE_RESULTS_PATH.parent.mkdir(parents=True, exist_ok=True)
     is_new = not LIVE_RESULTS_PATH.exists()
@@ -90,6 +108,10 @@ async def gorgias_webhook(request: Request, x_webhook_secret: str | None = Heade
     if ticket_id is None:
         logger.warning("Webhook payload had no recognizable ticket id: %s", payload)
         return {"status": "ignored", "reason": "no ticket_id in payload"}
+
+    if _already_processed(ticket_id):
+        logger.info("Ticket %s already processed -- likely a webhook retry, skipping", ticket_id)
+        return {"status": "duplicate", "ticket_id": ticket_id}
 
     ticket = fetch_single_ticket(ticket_id)
     if ticket is None:
