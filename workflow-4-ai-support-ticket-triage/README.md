@@ -84,6 +84,14 @@ python -m src.cli --input data/sample_tickets.csv --out-dir out --verbose
 
 # Or pull real tickets from a connected Gorgias account instead of a CSV
 python -m src.cli --source gorgias --out-dir out --verbose
+
+# --source gorgias skips tickets that already have an [AI Triage] note
+# (from a prior run, the webhook, or the backfill script) -- makes this
+# usable as a cron-scheduled polling alternative to the webhook, since
+# each run only costs a Claude call for genuinely new tickets. Pass
+# --force to reprocess everything anyway (e.g. while tuning prompts
+# against the same known tickets).
+python -m src.cli --source gorgias --out-dir out --force --verbose
 ```
 
 Output lands in `out/`:

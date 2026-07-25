@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from src.triage.client import TriageClient
-from src.triage.gorgias_client import fetch_tickets
+from src.triage.gorgias_client import fetch_tickets, has_ai_triage_note
 from src.triage.io_utils import load_tickets, write_failures, write_results
 from src.triage.pipeline import run_batch, summarize
 
@@ -42,6 +42,11 @@ def main() -> int:
         "--limit", type=int, default=None,
         help="Only process the first N tickets (useful for a cheap smoke test before a full run).",
     )
+    parser.add_argument(
+        "--force", action="store_true",
+        help="Reprocess tickets even if they already have an [AI Triage] note "
+             "(only relevant for --source gorgias; useful when tuning prompts against known tickets).",
+    )
     parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args()
 
@@ -61,6 +66,13 @@ def main() -> int:
             return 1
         tickets = fetch_tickets()
         print(f"Pulled {len(tickets)} tickets from Gorgias")
+
+        if not args.force:
+            new_tickets = [t for t in tickets if not has_ai_triage_note(t.ticket_id)]
+            skipped = len(tickets) - len(new_tickets)
+            if skipped:
+                print(f"Skipping {skipped} already-processed ticket(s) (use --force to reprocess)")
+            tickets = new_tickets
     else:
         if not args.input:
             print("--input is required when --source csv", file=sys.stderr)
