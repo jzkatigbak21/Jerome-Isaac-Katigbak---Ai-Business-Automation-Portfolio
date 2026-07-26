@@ -6034,7 +6034,7 @@
     const flagged = all.length - resolved;
     document.getElementById("stats").innerHTML = `
       <div class="stat"><div class="n">${all.length}/${all.length}</div><div class="l">Processed</div></div>
-      <div class="stat"><div class="n good">${resolved}</div><div class="l">Auto-drafted</div></div>
+      <div class="stat"><div class="n good">${resolved}</div><div class="l">Ready to send</div></div>
       <div class="stat"><div class="n warn">${flagged}</div><div class="l">Flagged</div></div>
       <div class="stat"><div class="n">0</div><div class="l">Failed</div></div>
     `;
@@ -6047,7 +6047,7 @@
     const el = document.getElementById("statusChips");
     el.innerHTML = `
       <button class="chip ${activeFilter === "all" ? "active" : ""}" data-filter="all">All · ${all.length}</button>
-      <button class="chip ${activeFilter === "resolved" ? "active" : ""}" data-filter="resolved">Auto-drafted · ${resolved}</button>
+      <button class="chip ${activeFilter === "resolved" ? "active" : ""}" data-filter="resolved">Ready to send · ${resolved}</button>
       <button class="chip ${activeFilter === "flagged" ? "active" : ""}" data-filter="flagged">Flagged · ${flagged}</button>
     `;
     el.querySelectorAll(".chip").forEach((btn) => {

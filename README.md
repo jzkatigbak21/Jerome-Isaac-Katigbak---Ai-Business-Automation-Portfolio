@@ -21,8 +21,10 @@ https://drive.google.com/file/d/1fF5a4NLAII7zrC4AENpJL3Msu7EMgk1A/view?usp=drive
 
 Classify support tickets (sentiment, urgency, category, entities), draft
 ready-to-send replies for straightforward cases, and flag anything
-sensitive for a human -- built directly against the **Claude API** with
-Claude Code, no low-code automation platform in the pipeline. Unlike
+sensitive for a human -- with a hedged starting-point draft even on the
+flagged ones, so a human is never handed a blank page -- built directly
+against the **Claude API** with Claude Code, no low-code automation
+platform in the pipeline. Unlike
 Workflows 1-3, this project *is* the automation: real Python, its own
 retry/concurrency handling, a live third-party API integration, and its
 own test suite.
@@ -55,6 +57,7 @@ CSV Output + interactive dashboard
 - Exponential backoff + jitter retries on rate limits, timeouts, 5xx errors
 - Bounded concurrency batch processing, verified at 300-ticket volume
 - Keyword + confidence-floor safety net independent of the model's own judgment
+- Flagged tickets still get a hedged starting-point draft where possible, not just a bare reason -- visually and textually distinct from the ready-to-send draft on non-flagged tickets so the two can't be confused
 - Live Gorgias REST API integration -- both a polling mode (`--source gorgias`) and a real-time webhook receiver, tested against a real Shopify dev store + Gorgias trial account
 - Closes the human-in-the-loop: classification results are written back onto the Gorgias ticket as an internal note, flagged tickets are tagged and priority-bumped, and genuinely urgent ones trigger a Slack ping
 - Idempotent by design at every entry point (webhook retry-safe dedup, backfill script, CLI `--force` override)

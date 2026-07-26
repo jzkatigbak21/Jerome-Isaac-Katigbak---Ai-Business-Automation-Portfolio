@@ -2,9 +2,10 @@
 
 A batch tool that classifies support tickets/reviews (sentiment, urgency,
 category, extracted entities), drafts ready-to-send replies for
-straightforward cases, and flags anything sensitive for a human -- built
-directly against the **Claude API** with Claude Code, no low-code
-automation platform in the pipeline itself.
+straightforward cases, and flags anything sensitive for a human -- with a
+hedged starting-point draft even on the flagged ones, so a human never
+starts from a blank page -- built directly against the **Claude API**
+with Claude Code, no low-code automation platform in the pipeline itself.
 
 Unlike the other workflows in this portfolio (n8n/Airtable/Zapier
 orchestration), this project is the pipeline: real Python, its own retry
@@ -30,7 +31,8 @@ one:
 3. Draft a send-ready reply for the straightforward, low-risk cases
 4. Flag anything that needs a human (legal/safety language, low
    confidence, account/payment changes, repeat escalations) instead of
-   guessing
+   guessing -- but still draft a hedged starting-point reply where
+   possible, rather than leaving the agent with nothing but a reason
 
 ## Pipeline
 
@@ -57,6 +59,7 @@ out/results.csv (batch) or out/live_results.csv (webhook)
 - Exponential backoff + jitter retries on rate limits, timeouts, and 5xx errors
 - Bounded concurrency batch processing, tested against 300 synthetic tickets
 - Keyword + confidence-floor safety net that can force a human-review flag even if the model didn't set one
+- Flagged tickets still get a draft where possible -- a hedged starting point (acknowledge + hold, no promised refunds/replacements, no responding to legal/chargeback claims directly) rather than nothing, distinct from the ready-to-send draft on non-flagged tickets
 - Per-ticket failure isolation -- one bad ticket can't take down the batch
 - Live Gorgias integration (`--source gorgias`) alongside the CSV path -- pulls real tickets via the Gorgias REST API and maps them into the same pipeline, tested against a real Shopify dev store + Gorgias trial
 - Real-time webhook receiver (`src/webhook_server.py`) -- classifies a ticket the instant Gorgias creates it, instead of waiting for the next poll
@@ -144,10 +147,15 @@ INFO:     34.6.16.210:0 - "POST /webhook/gorgias HTTP/1.1" 200 OK
 **Closing the loop:** the receiver also writes the result back onto the
 ticket as a Gorgias internal note (`POST /tickets/{id}/messages`) -- an
 agent opens the ticket and sees "[AI Triage] category=... urgency=..."
-plus either the suggested reply or the flagged reason, right where they
-already work, instead of needing to go check a CSV. A note-write failure
-is logged but never breaks the webhook response -- the classification is
-already saved regardless.
+plus the drafted reply, right where they already work, instead of
+needing to go check a CSV. Flagged tickets never lose the warning just
+because a draft is also present: the note always leads with "FLAGGED FOR
+HUMAN REVIEW" and the reason first, with the draft appended underneath
+labeled "Suggested starting point (needs review, not ready to send)" --
+a deliberately different label from the ready-to-send draft on
+non-flagged tickets, so nobody mistakes a starting point for something
+safe to fire off as-is. A note-write failure is logged but never breaks
+the webhook response -- the classification is already saved regardless.
 
 The safety-net keyword override (until this point only exercised by unit
 tests) also fired correctly against a real ticket: a live email
@@ -281,8 +289,11 @@ Two results worth calling out:
 **[dashboard.html](dashboard.html)** renders all three runs as an
 interactive console with a tab toggle -- the 20-row smoke test, the full
 300-row batch, and this live Gorgias run -- click through each ticket to
-see the original message, Claude's classification, and either the
-drafted reply or the human-review reason.
+see the original message and Claude's classification. Non-flagged
+tickets show a green "ready to send" draft; flagged tickets show the
+red review reason plus, where the model had enough to work with, an
+amber "suggested starting point -- not ready to send" draft underneath,
+visually distinct so the two are never confused.
 
 ## Key Skills Demonstrated
 
