@@ -1,4 +1,5 @@
-<img width="1693" height="929" alt="repository banner-1" src="https://github.com/user-attachments/assets/763a3998-2480-4ded-99b9-9b1a3fbe5305" />
+<img width="1692" height="929" alt="repository banner" src="https://github.com/user-attachments/assets/d3f13adb-abe8-4491-b3c1-681024a9e454" />
+
 
 # AI Business Automation Portfolio
 
