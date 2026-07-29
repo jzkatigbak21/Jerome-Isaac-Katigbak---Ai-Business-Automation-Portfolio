@@ -4,9 +4,9 @@
 
 ## Overview
 
-This repository showcases four production-style AI automation projects covering business development, outbound sales, proposal generation, and support ticket triage. Each project demonstrates how AI, workflow automation, APIs, and business applications can be combined to solve real operational problems.
+This repository showcases five production-style AI automation projects covering business development, outbound sales, proposal generation, support ticket triage, and property maintenance dispatch. Each project demonstrates how AI, workflow automation, APIs, and business applications can be combined to solve real operational problems.
 
-The portfolio focuses on practical implementations using **n8n**, **Airtable**, **OpenAI**, **Zapier**, and modern APIs with an emphasis on modular workflow design and human-in-the-loop automation. Workflow 4 is built differently on purpose: no low-code platform in the pipeline, just Python and the **Claude API** directly, with its own retry/concurrency handling and test suite -- built end-to-end with **Claude Code**.
+The portfolio focuses on practical implementations using **n8n**, **Make.com**, **Airtable**, **OpenAI**, **Zapier**, and modern APIs with an emphasis on modular workflow design and human-in-the-loop automation. Workflows 4 and 5 both put the Claude API directly in the pipeline instead of just prompting a chatbot -- Workflow 4 with no low-code platform at all (real Python, its own retry/concurrency handling and test suite), Workflow 5 calling Claude directly from a Make.com HTTP module inside an otherwise low-code build. Both built end-to-end with **Claude Code**.
 
 ---
 
@@ -81,6 +81,75 @@ CSV Output + interactive dashboard
 - Human-in-the-Loop Automation
 - Defensive Engineering
 - Automated Testing
+- Built with Claude Code
+
+---
+
+# Workflow 5: AI Property Maintenance Triage & Dispatch
+
+## Objective
+
+Classify incoming tenant maintenance requests (urgency, category,
+summary), flag anything needing a human before a vendor is contacted,
+and automatically match, assign, and notify the right vendor for
+everything else -- built on **Make.com + Airtable**, with the
+**Claude API** called directly from a Make.com HTTP module for
+structured classification. Same human-in-the-loop philosophy as
+Workflow 4, deliberately rebuilt on a low-code stack to show the
+judgment behind the architecture isn't tied to one tool.
+
+## Workflow
+
+```text
+Tenant submits request (public Airtable form)
+        ↓
+Make.com: Airtable trigger → Claude API (forced tool-use classification)
+        ↓
+Router on Needs Human Review
+  ├─ true  → PM emailed, Status → Pending Review
+  └─ false → Vendor search by category
+        ├─ found     → vendor assigned + emailed
+        └─ not found → Status → No Vendor Available, PM emailed
+        ↓
+Vendor self-reports status via a second public form
+        ↓
+Property Manager Dashboard (Airtable Interface)
+```
+
+## Features
+
+- Structured Claude output via forced tool-use, called directly from a
+  Make.com HTTP module -- no native app connector, full control over
+  the request/response shape
+- Human-in-the-loop safety split: emergencies and low-confidence
+  classifications route to a person instead of auto-dispatching a vendor
+- Automatic vendor matching by category, with a distinct status (not a
+  silent drop) when no active vendor covers a category
+- Two public self-service forms (tenant intake, vendor status updates),
+  including a staging-table pattern to work around Airtable forms only
+  being able to create records, not update existing ones
+- Airtable schema provisioned via API scripts (Python) instead of
+  manually clicking through field types
+- Live Property Manager Dashboard: KPIs, a prioritized "Needs My
+  Attention" queue, and category/property breakdown charts
+
+## Business Impact
+
+- Emergencies reach a person immediately instead of waiting in a queue
+- Routine requests get dispatched without anyone manually matching a
+  vendor to a category
+- A property manager can see what needs attention at a glance instead
+  of scanning a raw table
+
+## Key Skills Demonstrated
+
+- Claude API Integration (structured output, forced tool use) from
+  inside a low-code platform
+- Low-Code Workflow Orchestration (Make.com)
+- API-Driven Schema Design (Airtable Metadata API)
+- Human-in-the-Loop Automation
+- Cross-Platform Integration Troubleshooting
+- Dashboard Design (Airtable Interfaces)
 - Built with Claude Code
 
 ---
@@ -268,6 +337,7 @@ PandaDoc API
 - Claude API / Claude Code
 - OpenAI
 - n8n
+- Make.com
 - Zapier
 - Airtable
 - Pipedrive
@@ -328,6 +398,11 @@ PandaDoc API
 │   │   └── triage/
 │   ├── tests/
 │   ├── dashboard.html
+│   ├── architecture.md
+│   └── README.md
+│
+├── workflow-5-ai-property-maintenance-triage/
+│   ├── scripts/
 │   ├── architecture.md
 │   └── README.md
 ```
