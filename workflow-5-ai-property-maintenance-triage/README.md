@@ -33,20 +33,38 @@ Claude API -- HTTP module, forced tool-use for structured output
         v
 Airtable "Update a Record" -- classification written back
         v
-Router on Needs Human Review
+Airtable "Search Records" -- possible-duplicate check: same property,
+  same category, still open, submitted within the last 7 days
+        v
+Router on duplicate found
   |
-  +-- true  --> PM emailed, Status -> Pending Review
-  |             (PM manually assigns a vendor when ready)
-  |             v
-  |             Airtable Automation: vendor assigned on a Pending
-  |             Review record -> vendor emailed, Status -> Vendor Assigned
+  +-- yes --> Status -> Possible Duplicate, PM emailed with both
+  |           requests side by side (unit numbers included, so the PM
+  |           can tell "same tenant re-reporting" from "two genuinely
+  |           separate issues that just share a category")
+  |           PM reviews and manually resolves either way:
+  |             - genuinely separate  -> assign a vendor as usual,
+  |               re-uses the same automation as the Pending Review
+  |               recovery path below
+  |             - actually a duplicate -> Status -> Closed - Duplicate,
+  |               Duplicate Of set to the original ticket (never
+  |               deleted -- the submission and the audit trail both
+  |               stay on record)
   |
-  +-- false --> Airtable "Search Records" for an active vendor
-                matching the classified category
+  +-- no  --> Router on Needs Human Review
         |
-        +-- found     --> vendor assigned + emailed,
-        |                 Status -> Vendor Assigned
-        +-- not found --> Status -> No Vendor Available, PM emailed
+        +-- true  --> PM emailed, Status -> Pending Review
+        |             (PM manually assigns a vendor when ready)
+        |             v
+        |             Airtable Automation: vendor assigned on a Pending
+        |             Review record -> vendor emailed, Status -> Vendor Assigned
+        |
+        +-- false --> Airtable "Search Records" for an active vendor
+                      matching the classified category
+              |
+              +-- found     --> vendor assigned + emailed,
+              |                 Status -> Vendor Assigned
+              +-- not found --> Status -> No Vendor Available, PM emailed
         v
 Vendor self-reports via a second public form (Scheduled / Completed)
         v
@@ -67,6 +85,15 @@ Attention / In Progress / All Records views, category + property charts
 - Automatic vendor matching by category + active status, with a
   distinct `No Vendor Available` status (not silently dropped) when no
   active vendor covers a category
+- Possible-duplicate detection: before dispatching, checks for another
+  open request at the same property in the same category submitted in
+  the last 7 days -- catches both a tenant re-reporting the same issue
+  and different tenants reporting the same building-wide problem,
+  without needing an exact-match on unit number. Flags for a human
+  rather than auto-merging, since a formula can't tell "shared building
+  system failing" from "two coincidentally similar unrelated issues" --
+  the notification includes both requests' unit numbers so the property
+  manager can make that call in seconds
 - Two public-facing self-service forms: tenant intake (creates a new
   request directly) and vendor status updates (relayed via a staging
   table + automation, since Airtable forms can only create records, not
@@ -159,6 +186,41 @@ anyone can describe an architecture, fewer people have debugged one:
   that automation type -- it only watches for changes to *existing*
   records. Silently produced zero executions until switched to "When a
   record is created."
+- **A linked-record field compared as text silently never matched,
+  with no error.** The possible-duplicate check's formula compared
+  `{Property}` against a Make.com token that turned out to be an array
+  (`Property[]`), not plain text -- Airtable's API returns link fields
+  as arrays of record IDs, always, never the linked record's display
+  name. The formula ran without error and just never found a match.
+  Confirmed by isolating the condition (temporarily dropping `Property`
+  from the formula) and watching it suddenly start finding real
+  results -- the cleanest way to prove which specific condition was
+  silently failing, rather than guessing.
+- **Fixing that array bug the first way created a different one.** Once
+  it was confirmed the token was an array, the fix used a "Get a
+  Record" module to resolve the linked Property into its actual name --
+  except that module was misconfigured to query the wrong table
+  (`Maintenance Requests` instead of `Properties`) with the wrong ID
+  (the current record's own ID instead of the linked property's ID),
+  so it just fetched the same record back again. Two separate
+  misconfigurations on one module, both needed fixing before the
+  lookup actually worked.
+- **Two separate missing-parenthesis errors from hand-editing formula
+  text.** Once while isolating the Property condition for testing
+  (deleted a condition without its matching paren), once while adding
+  a date-range condition (`IS_AFTER(...)` ended up nested inside
+  `NOT(...)` instead of alongside it as its own sibling condition to
+  `AND(...)`). Airtable's `422 Invalid formula` error doesn't say
+  *where* the mismatch is, just that there is one -- both required
+  manually counting parens against the actual intent.
+- **A multi-match search meant multi-fire everything downstream.**
+  When the duplicate check found 4 open requests matching the same
+  property and category, every module after it -- the status update,
+  the PM email -- fired once *per match*, not once total, which is
+  Make.com's default behavior for any module that returns multiple
+  bundles. Fixed by setting the Search Records module's own `Limit` to
+  1, so at most one match is ever considered regardless of how many
+  actually exist.
 
 ## Sample results
 
@@ -170,6 +232,7 @@ Make.com scenario and Airtable automations:_
 | "No hot water, can smell gas near the water heater" | Emergency / Plumbing | Routed to PM (`Pending Review`), no vendor auto-dispatched |
 | "Kitchen faucet has a slow drip, not urgent" | Routine / Plumbing | Vendor auto-matched, assigned, and emailed |
 | "Kitchen cabinet hinge is squeaking" | Routine / Structural | Correctly returned `No Vendor Available` before a Structural vendor existed on file; matched correctly once one was added |
+| A second Structural request at a property with an existing open Structural request | Routine / Structural | Correctly flagged `Possible Duplicate` instead of auto-dispatching a second vendor for what might be the same issue |
 
 _Property Manager Dashboard, live snapshot (150 synthetic seed records
 plus live-tested ones):_
